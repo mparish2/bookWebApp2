@@ -1,0 +1,48 @@
+
+#authorTable{
+    text-align: center;
+}
+td{
+    border: .5px solid #000;
+    font-weight: bold;
+}
+#authorTable{
+   margin-top: 25px;
+  
+}
+th{   
+    border-bottom: .5px solid #000;
+    font-weight: bolder;
+    text-decoration: underline;
+}
+tr:nth-child(even)>td {
+   background-color: lightblue;
+ }
+ #taskMenu li a:hover{
+    font-weight: bold;
+    color: #081472;
+}
+
+#goBack a{
+    color: #fff;
+}
+#goBack a:hover{
+    font-weight: bold;
+}
+#deleteContent{
+    text-align: left;
+}
+#deleteContent input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+   
+}
+#taskButton{
+    margin-top: 18px;
+}
+#taskMenu li a span{
+    vertical-align: -.75px;
+    margin-left: 4.5px;
+    margin-right: 0px;
+    
+} 
