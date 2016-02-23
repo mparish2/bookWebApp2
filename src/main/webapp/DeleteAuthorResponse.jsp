@@ -22,7 +22,7 @@
             <input type="text" name="authorId" value="" placeholder="Enter Author Id"/>
             <input class="btn btn-danger btn-sm" type="submit"  name="submit" value="Submit"/>
         </form>
-
+ 
         <p id="authorsDelP">Authors Deleted: ${authorIdResp}</p>
         
         </div>
