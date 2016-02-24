@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.model;
 
+import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,5 +67,10 @@ public class MockAuthorDAO implements AuthorDAOStrategy,Serializable{
     @Override
     public void setDb(DBStrategy db) {
         this.db = db;
+    }
+
+    @Override
+    public Author getAuthorById(int authorId) throws DataAccessException, ClassNotFoundException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

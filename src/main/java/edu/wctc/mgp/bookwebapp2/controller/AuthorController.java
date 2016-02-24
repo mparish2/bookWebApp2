@@ -26,12 +26,14 @@ import javax.inject.Inject;
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
 
+    //add more constants later
     private static final String AUTHOR_RESP_VIEW = "AuthorResponse.jsp";
-    private static final String DELETE_RESP_VIEW = "DeleteAuthorResponse.jsp";
-    
+    //private static final String DELETE_RESP_VIEW = "DeleteAuthorResponse.jsp";
+    private static final String AUTHOR_ADD_VIEW = "Add.jsp";
+    private static final String AUTHOR_EDIT_VIEW = "Edit.jsp";
     @Inject
     private AuthorService as;
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -44,30 +46,51 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String destination = AUTHOR_RESP_VIEW;
         try {
             String taskType = request.getParameter("taskType");
+            String[] authorIds = request.getParameterValues("authorId");
             
+            if (taskType.equals("viewAuthors")) {
+                //this to retrieve from the private method belonging to the controller
+                this.retrieveList(request, as);
+                destination = AUTHOR_RESP_VIEW;
 
-            if (taskType.equals("viewAuthor")) {
-                List<Author> authors = null;
-                authors = as.getAuthorList();
-                request.setAttribute("authors", authors);
-                RequestDispatcher view = request.getRequestDispatcher(AUTHOR_RESP_VIEW);
-                view.forward(request, response);
+            } else if (taskType.equals("AEDAuthor")) {
+                String subTaskType = request.getParameter("submit");
+                if (subTaskType.equals("Delete")) {
+                   
+                    //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
+                    for (String id : authorIds) {
+                            as.deleteAuthorbyID(id);
+                        }
+                    
+                    this.retrieveList(request, as);
+                    destination = AUTHOR_RESP_VIEW;
+                    
+                }else if(subTaskType.equals("Edit")){
+                    String authorId = authorIds[0]; //first of checked
+                    Author author = as.getAuthorById(authorId);
+                    request.setAttribute("author", author);
+                    destination = AUTHOR_EDIT_VIEW;
+                } else if(subTaskType.equals("Add")){
+                    destination = AUTHOR_ADD_VIEW;
+                }
             }
-           else if (taskType.equals("deleteAuthor")) {
-               String authorId = request.getParameter("authorId");
-               request.setAttribute("authorIdResp",as.deleteAuthorbyID(authorId));
-                RequestDispatcher view2 = request.getRequestDispatcher(DELETE_RESP_VIEW);
-                view2.forward(request, response);
-           }
 
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
 
-//        RequestDispatcher view = request.getRequestDispatcher(AUTHOR_RESP_VIEW);
-//                view.forward(request,response);
+        RequestDispatcher view = request.getRequestDispatcher(destination);
+        view.forward(request, response);
+    }
+
+    //not repeating code
+    //needed to set the retreieved authorlist, needed to get all of the authors
+    private void retrieveList(HttpServletRequest request, AuthorService as) throws Exception {
+        List<Author> authors = as.getAuthorList();
+        request.setAttribute("authors", authors);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

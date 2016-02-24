@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.model;
 
+import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
@@ -22,7 +23,10 @@ public class AuthorService implements Serializable{
     @Inject
     private AuthorDAOStrategy dao;
 
-    
+                                
+    public Author getAuthorById(String authorId)throws DataAccessException, ClassNotFoundException, SQLException{
+       return dao.getAuthorById(Integer.parseInt(authorId));//needs to be int lower down
+    }
     
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
         return dao.getAuthorList();

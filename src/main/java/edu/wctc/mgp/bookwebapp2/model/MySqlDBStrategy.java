@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.model;
 
+import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -58,6 +59,50 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
     @Override
     public void closeConnection() throws SQLException {
         conn.close();
+    }
+    /**
+     * 
+     * @param tableName
+     * @param primaryKeyFieldName
+     * @param primaryKeyValue
+     * @return
+     * @throws DataAccessException 
+     */
+     @Override
+    public final Map<String, Object> findById(String tableName, String primaryKeyFieldName,
+            Object primaryKeyValue) throws DataAccessException {
+
+        String sql = "SELECT * FROM " + tableName + " WHERE " + primaryKeyFieldName + " = ?";
+        PreparedStatement stmt = null;
+        final Map<String, Object> record = new HashMap();
+
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setObject(1, primaryKeyValue);
+            ResultSet rs = stmt.executeQuery();
+            final ResultSetMetaData metaData = rs.getMetaData();
+            final int fields = metaData.getColumnCount();
+
+            // Retrieve the raw data from the ResultSet and copy the values into a Map
+            // with the keys being the column names of the table.
+            if (rs.next()) {
+                for (int i = 1; i <= fields; i++) {
+                    record.put(metaData.getColumnName(i), rs.getObject(i));
+                }
+            }
+            
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage(),e.getCause());
+        } finally {
+            try {
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                throw new DataAccessException(e.getMessage(),e.getCause());
+            } // end try
+        } // end finally
+
+        return record;
     }
 
     /**

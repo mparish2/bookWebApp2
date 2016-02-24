@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.model;
 
+import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
 
     @Inject
     private DBStrategy db;
+    
     private final String DRIVER = "com.mysql.jdbc.Driver";
     private final String URL = "jdbc:mysql://localhost:3306/book";
     private final String USER = "root";
@@ -36,6 +38,20 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     private static final String DATE_ADDED = "date_added";
 
     public AuthorDAO() {
+    }
+    
+    
+     @Override
+    public Author getAuthorById(int authorId)  throws DataAccessException, ClassNotFoundException, SQLException{
+       db.openConnection(DRIVER, URL, USER, PWD);
+        
+        Map<String,Object> sinRec = db.findById(TABLE_NAME,AUTHOR_ID, authorId);
+        Author author = new Author();
+        author.setAuthorId((Integer)sinRec.get("author_id"));
+        author.setAuthorName(sinRec.get("author_name").toString());
+        author.setDateAdded((Date)sinRec.get("date_added"));
+        
+        return author;
     }
     
     /**
@@ -67,6 +83,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         db.closeConnection();
         return authors;
     }
+      
 
     /**
      *
@@ -143,5 +160,11 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
        int test = dao.addAuthor(testAuthor);
         System.out.println(test);
     }
+
+    
+
+   
+
+  
 
 }

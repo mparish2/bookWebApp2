@@ -17,33 +17,50 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     </head>
     <body>
-        
-        <div class="container" id="tableContent">
-            <h2>Author Table!</h2>
-            <table id="authorTable" class="table table-striped table-responsive">
-                <tr>
-                    <th>Author ID</th>
-                    <th>Name</th>
-                    <th>Date Added</th>
-                </tr>
-                <c:forEach var="a" items="${authors}">
-                    <tr>
 
-                        <td> ${a.authorId} </td>
-                        <td> ${a.authorName} </td>
-                        <td>
-                            <fmt:formatDate pattern="M/d/yyyy" value="${a.dateAdded}"></fmt:formatDate>
-                            </td>
-                        </tr>
-                </c:forEach>
-            </table>
+        <div class="container" id="tableContent">
+
+            <h2>Author Table!</h2>
+
+            <br>
+
+            <form method="POST" action="AuthorController?taskType=AEDAuthor">
+                
+                    <input type="submit" class="btn btn-success" value="Add" name="submit" />&nbsp;
+                    <input type="submit" class="btn btn-warning" value="Edit" name="submit" />&nbsp;
+                     <input type="submit"  class="btn btn-danger" value="Delete" name="submit" /> 
+               
+
+                <table id="authorTable" class="table table-striped table-responsive">
+                    <tr>
+                        <th>Author ID</th>
+                        <th>Name</th>
+                        <th>Date Added</th>
+                    </tr>
+                    <c:forEach var="a" items="${authors}">
+                        <tr>
+
+                            <td> <input type="checkbox" name="authorId" value="${a.authorId}" /> </td>
+                            <td> ${a.authorName} </td>
+                            <td>
+                                <fmt:formatDate pattern="M/d/yyyy" value="${a.dateAdded}"></fmt:formatDate>
+                                </td>
+                            </tr>
+                    </c:forEach>
+                </table>
+                    <input type="submit" class="btn btn-success" value="Add" name="submit" />&nbsp;
+                    <input type="submit" class="btn btn-warning" value="Edit" name="submit" />&nbsp;
+                    <input type="submit"  class="btn btn-danger" value="Delete" name="submit" /> </a>
+                <br>
+                <br>
+            </form>
         </div>
         <div class="container" id="goBackContainer">
             <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.html">Go Back</a></button>
         </div>
 
         <p>${errorMsg}</p>
-        
+
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     </body>

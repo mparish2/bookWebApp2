@@ -18,7 +18,7 @@
         <div class="container" id="deleteContent">
             <h2>Delete a Author!</h2>
             
-        <form  method="POST" action="AuthorController?taskType=deleteAuthor" id="deleteForm" name="deleteForm">
+        <form  method="POST" action="AuthorController?subTaskType=deleteAuthor" id="deleteForm" name="deleteForm">
             <input type="text" name="authorId" value="" placeholder="Enter Author Id"/>
             <input class="btn btn-danger btn-sm" type="submit"  name="submit" value="Submit"/>
         </form>

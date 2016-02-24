@@ -5,8 +5,10 @@
  */
 package edu.wctc.mgp.bookwebapp2.model;
 
+import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -22,6 +24,8 @@ public interface AuthorDAOStrategy {
 
     public int addAuthor(Author author) throws SQLException;
     
+    public Author getAuthorById(int authorId)throws DataAccessException, ClassNotFoundException, SQLException;
+
     public DBStrategy getDb();
     
     public void setDb(DBStrategy db);
