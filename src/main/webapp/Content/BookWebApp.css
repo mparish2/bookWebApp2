@@ -1,4 +1,9 @@
-
+#deleteToggleContent{
+    text-align: right;
+}
+h2{
+    text-align: center;
+}
 #authorTable{
     text-align: center;
 }
