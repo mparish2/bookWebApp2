@@ -18,10 +18,10 @@
         <link href="Content/bootstrap-switch.min.css" rel="stylesheet">
     </head>
     <body>
-
+        <h2>Author Table!</h2>
         <div class="container" id="tableContent">
 
-            <h2>Author Table!</h2>
+            
 
             <br>
 
@@ -33,7 +33,7 @@
                         <input type="checkbox" id="deleteToggle" name="my-checkbox"  data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Multi" data-off-text="Single" checked >
                     </div>
                 <div class="input-group" id="aedButtons">
-                    <input type="submit" class="btn btn-success" value="Add" name="submit" />
+                    <input type="submit" class="btn btn-success" value="Add" name="submit" >
                     <input type="submit" class="btn btn-warning" value="Edit" name="submit" />&nbsp;&nbsp;
                     <input type="submit"  class="btn btn-danger" value="Delete" name="submit" />
                     
@@ -66,10 +66,9 @@
                 <br>
                 <br>
             </form>
-        </div>
-        <div class="container" id="goBackContainer">
             <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.html">Go Back</a></button>
         </div>
+       
 
         <p>${errorMsg}</p>
 

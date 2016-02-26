@@ -17,10 +17,11 @@
         
         <div class="container">
             <h2>Edit a Author</h2>
+            <form method="POST" action="AuthorController">
             <table id="authorTable" class="table table-striped table-responsive">
                 <tr>
                     <td>ID</td>
-                    <td><input type="text" value="${author.authorId}" name="authorId" /></td>
+                    <td><input readonly type="text" value="${author.authorId}" name="authorId" /></td>
                 </tr> 
                 <tr>
                     <td>Name</td>
@@ -28,11 +29,15 @@
                 </tr>
                 <tr> 
                     <td>Date Added</td>
-                    <td><input type="text" value="${author.dateAdded}" name="dateAdded" /></td>
+                    <td><input readonly type="text" value="${author.dateAdded}" name="dateAdded" /></td>
                 </tr>
             </table>
+                <input type="submit" class="btn btn-info" value="Cancel" name="taskType" />
+                <input type="submit" class="btn btn-success" value="Save" name="taskType" />
+            </form>
         </div>
-
+         
+         
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     </body>

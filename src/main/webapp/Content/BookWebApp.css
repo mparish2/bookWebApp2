@@ -1,19 +1,48 @@
+#HomeBody{
+    background-image: url('BookArch.jpg');
+    background-repeat:no-repeat;
+}
+#addBody{
+    background-image: url('author.png');
+    background-size: 58%;
+    background-repeat:no-repeat;
+    background-position-x: 50%;
+    background-position-y: -18%;
+ 
+}
+#tableContent{
+     background-image: url('BookSpiral.jpg');
+}
+#content{
+    background-color: lightyellow;
+    margin-top: 40px;
+}
 #deleteToggleContent{
     text-align: right;
 }
 h2{
     text-align: center;
+    text-shadow: 2px 2.2px lightgrey;
+    font-weight: bold;
+}
+#indexH2{
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+}
+label{
+    color:white;
+    font-weight: bolder;
+    font-size: 16.2px;
+    text-shadow: .75px .76px black;
+    
 }
 #authorTable{
     text-align: center;
+     margin-top: 25px;
 }
 td{
     border: .5px solid #000;
     font-weight: bold;
-}
-#authorTable{
-   margin-top: 25px;
-  
 }
 th{   
     border-bottom: .5px solid #000;
@@ -27,7 +56,9 @@ tr:nth-child(even)>td {
     font-weight: bold;
     color: #081472;
 }
-
+#goBack{
+    margin-bottom: 20px;
+}
 #goBack a{
     color: #fff;
 }
@@ -36,6 +67,7 @@ tr:nth-child(even)>td {
 }
 #deleteContent{
     text-align: left;
+    
 }
 #deleteContent input {
     margin-top: 10px;
@@ -43,7 +75,9 @@ tr:nth-child(even)>td {
    
 }
 #taskButton{
-    margin-top: 18px;
+    margin-top: 5px;
+    margin-bottom: 70px;
+    margin-left: 15px;
 }
 #taskMenu li a span{
     vertical-align: -.75px;

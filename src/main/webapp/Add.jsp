@@ -13,9 +13,10 @@
          <link rel="stylesheet" href="Content/BookWebApp.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     </head>
-    <body>
-        <div class="container">
+    <body id="addBody">
+        <div class="container" id="addContent">
             <h2>Add a Author</h2>
+            <form method="POST" action="AuthorController">
             <table id="authorTable" class="table table-striped table-responsive"> 
                 <tr>
                     <td>Name</td>
@@ -23,6 +24,9 @@
                 </tr>
               
             </table>
+                <input type="submit" class="btn btn-info" value="Cancel" name="taskType" />
+                <input type="submit" class="btn btn-success" value="Save" name="taskType" />
+            </form>
         </div>
         
         

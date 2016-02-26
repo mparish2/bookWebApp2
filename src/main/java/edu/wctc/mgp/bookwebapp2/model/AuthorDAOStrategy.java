@@ -22,11 +22,31 @@ public interface AuthorDAOStrategy {
 
     public int updatebyID(Author author) throws SQLException;
 
-    public int addAuthor(Author author) throws SQLException;
-    
-    public Author getAuthorById(int authorId)throws DataAccessException, ClassNotFoundException, SQLException;
+    public boolean addAuthor(Author author) throws SQLException;
+
+    public Author getAuthorById(int authorId) throws DataAccessException, ClassNotFoundException, SQLException;
 
     public DBStrategy getDb();
-    
+
     public void setDb(DBStrategy db);
+
+    public void initDAO(String driver, String url, String user, String pwd);
+
+    public void setPwd(String PWD);
+
+    public String getPwd();
+
+    public void setUser(String USER);
+
+    public String getUser();
+
+    public void setUrl(String URL);
+
+    public String getUrl();
+
+    public void setDriver(String DRIVER);
+
+    public String getDriver();
+    
+    public boolean saveAuthor(Integer authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException;
 }

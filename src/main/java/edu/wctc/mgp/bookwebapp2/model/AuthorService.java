@@ -23,6 +23,12 @@ public class AuthorService implements Serializable{
     @Inject
     private AuthorDAOStrategy dao;
 
+    /**
+     * Default Constructor
+     */
+    public AuthorService(){
+        
+    }
                                 
     public Author getAuthorById(String authorId)throws DataAccessException, ClassNotFoundException, SQLException{
        return dao.getAuthorById(Integer.parseInt(authorId));//needs to be int lower down
@@ -40,7 +46,16 @@ public class AuthorService implements Serializable{
         return dao.updatebyID(author);
     }
 
-    public int addAuthor(Author author) throws SQLException {
+    public void saveAuthor(String authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException{
+        Integer id = null; 
+        if(authorId == null || authorId.isEmpty()) {
+                id = null;
+            } else {
+                id = Integer.parseInt(authorId);
+            }   
+        dao.saveAuthor(id, authorName);
+    }
+    public boolean addAuthor(Author author) throws SQLException {
         return dao.addAuthor(author);
     }
 

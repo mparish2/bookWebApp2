@@ -27,10 +27,16 @@ import javax.inject.Inject;
 public class AuthorController extends HttpServlet {
 
     //add more constants later
-    private static final String AUTHOR_RESP_VIEW = "AuthorResponse.jsp";
+    private static final String AUTHOR_RESP_VIEW = "/AuthorResponse.jsp";
     //private static final String DELETE_RESP_VIEW = "DeleteAuthorResponse.jsp";
-    private static final String AUTHOR_ADD_VIEW = "Add.jsp";
-    private static final String AUTHOR_EDIT_VIEW = "Edit.jsp";
+    private static final String AUTHOR_ADD_VIEW = "/Add.jsp";
+    private static final String AUTHOR_EDIT_VIEW = "/Edit.jsp";
+    
+    private String driverClass;
+    private String url;
+    private String userName;
+    private String pwd;
+    
     @Inject
     private AuthorService as;
 
@@ -50,6 +56,9 @@ public class AuthorController extends HttpServlet {
         try {
             String taskType = request.getParameter("taskType");
             String[] authorIds = request.getParameterValues("authorId");
+            
+            //uses init parameters to config database connection
+            configDBConnection();
             
             if (taskType.equals("viewAuthors")) {
                 //this to retrieve from the private method belonging to the controller
@@ -77,12 +86,23 @@ public class AuthorController extends HttpServlet {
                     destination = AUTHOR_ADD_VIEW;
                 }
             }
-
+            else if(taskType.equals("Cancel")){
+                this.retrieveList(request, as);
+                destination = AUTHOR_RESP_VIEW;
+            }
+            else if(taskType.equals("Save")){
+                 String authorName = request.getParameter("authorName");
+                 String authorId = request.getParameter("authorId");
+                 as.saveAuthor(authorId, authorName);
+                 this.retrieveList(request, as);
+                 destination = AUTHOR_RESP_VIEW;
+            }
+           
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
 
-        RequestDispatcher view = request.getRequestDispatcher(destination);
+        RequestDispatcher view = request.getServletContext().getRequestDispatcher(destination);
         view.forward(request, response);
     }
 
@@ -91,6 +111,18 @@ public class AuthorController extends HttpServlet {
     private void retrieveList(HttpServletRequest request, AuthorService as) throws Exception {
         List<Author> authors = as.getAuthorList();
         request.setAttribute("authors", authors);
+    }
+    
+    private void configDBConnection(){
+        as.getDao().initDAO(driverClass, url, userName, pwd);
+    }
+    
+    @Override
+    public void init() throws ServletException{
+        driverClass = getServletContext().getInitParameter("db.driver.class");
+        url = getServletContext().getInitParameter("db.url");
+        userName = getServletContext().getInitParameter("db.username");
+        pwd = getServletContext().getInitParameter("db.password");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

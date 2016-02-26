@@ -28,7 +28,7 @@ public interface DBStrategy {
     
      public int updatebyID(String tableName, List<String> colNames, List<Object> colValues, String pkColName, Object value) throws SQLException;
     
-     public int insertRecord(String tableName, List <String> columnNames, List <Object>columnValues)throws SQLException;
+     public boolean insertRecord(String tableName, List <String> columnNames, List <Object>columnValues)throws SQLException;
 
      public Map<String, Object> findById(String tableName, String primaryColName,
             Object primaryKeyValue) throws DataAccessException, ClassNotFoundException, SQLException;

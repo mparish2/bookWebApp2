@@ -14,23 +14,24 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.Dependent;
+
 import javax.inject.Inject;
 
 /**
  *
  * @author Matthew_2
  */
-@SessionScoped
+@Dependent
 public class AuthorDAO implements AuthorDAOStrategy, Serializable {
 
     @Inject
     private DBStrategy db;
     
-    private final String DRIVER = "com.mysql.jdbc.Driver";
-    private final String URL = "jdbc:mysql://localhost:3306/book";
-    private final String USER = "root";
-    private final String PWD = "admin";
+    private String driver;
+    private String url;
+    private String user;
+    private String pwd;
 
     private static final String TABLE_NAME = "author";
     private static final String AUTHOR_ID = "author_id";
@@ -43,7 +44,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     
      @Override
     public Author getAuthorById(int authorId)  throws DataAccessException, ClassNotFoundException, SQLException{
-       db.openConnection(DRIVER, URL, USER, PWD);
+       db.openConnection(driver, url, user, pwd);
         
         Map<String,Object> sinRec = db.findById(TABLE_NAME,AUTHOR_ID, authorId);
         Author author = new Author();
@@ -62,7 +63,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     @Override
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
 
-        db.openConnection(DRIVER, URL, USER, PWD); //rigid for now. will fix later
+        db.openConnection(driver, url, user, pwd); //rigid for now. will fix later
 
         //turning a listOmaps to listOauthors
         List<Map<String, Object>> rawData = db.findAllRecords(TABLE_NAME, 0);
@@ -94,7 +95,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
      */
     @Override
     public int deleteAuthorbyID(Object primaryKeyValue) throws SQLException, ClassNotFoundException {
-        db.openConnection(DRIVER, URL, USER, PWD);
+        db.openConnection(driver, url, user, pwd);
         int numAuthor = db.deleteRecordbyPrimaryKey(TABLE_NAME, AUTHOR_ID, primaryKeyValue);
         db.closeConnection();
         return numAuthor;
@@ -109,7 +110,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     @Override
     public int updatebyID(Author author) throws SQLException {
         try {
-            db.openConnection(DRIVER, URL, USER, PWD);
+            db.openConnection(driver, url, user, pwd);
             List<String> authorColumns = Arrays.asList(AUTHOR_NAME, DATE_ADDED);;
             List<Object> authorValues = Arrays.asList(author.getAuthorName(), author.getDateAdded());
             int numAuthor = db.updatebyID(TABLE_NAME, authorColumns, authorValues, AUTHOR_ID, author.getAuthorId());
@@ -126,12 +127,12 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     
     
     @Override
-    public int addAuthor(Author author) throws SQLException{
+    public boolean addAuthor(Author author) throws SQLException{
         try {
-            db.openConnection(DRIVER, URL, USER, PWD);
+            db.openConnection(driver, url, user, pwd);
             List<String> authorColumns = Arrays.asList(AUTHOR_NAME, DATE_ADDED);;
             List<Object> authorValues = Arrays.asList(author.getAuthorName(), author.getDateAdded());
-            int numAuthor = db.insertRecord(TABLE_NAME, authorColumns, authorValues);
+            boolean numAuthor = db.insertRecord(TABLE_NAME, authorColumns, authorValues);
             return numAuthor;
         } catch (SQLException sqlE) {
             throw sqlE;
@@ -142,14 +143,78 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         }
     }
 
+      @Override
+    public boolean saveAuthor(Integer authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException {
+        db.openConnection(driver, url, user, pwd);
+        boolean result = false;
+        
+        if(authorId == null || authorId.equals(0)) {
+            result = db.insertRecord("author", Arrays.asList("author_name","date_added"), 
+                                      Arrays.asList(authorName,new Date()));
+        } else {
+            // must be an update of an existing record
+            int recsUpdated = db.updatebyID("author", Arrays.asList("author_name"), 
+                                       Arrays.asList(authorName),
+                                       "author_id", authorId);
+            if(recsUpdated > 0) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+    
+    
+    @Override
     public DBStrategy getDb() {
         return db;
     }
 
+    @Override
     public void setDb(DBStrategy db) {
         this.db = db;
     }
 
+     @Override
+    public void initDAO(String driver, String url, String user, String pwd) {
+        setDriver(driver);
+        setUrl(url);
+        setUser(user);
+        setPwd(pwd);
+        //needs validation later (best practices)
+    }
+    
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
         AuthorDAOStrategy dao = new AuthorDAO();
@@ -157,9 +222,11 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         System.out.println(authors);
 
         Author testAuthor = new Author("Matthew Parish", new Date());
-       int test = dao.addAuthor(testAuthor);
+        boolean test = dao.addAuthor(testAuthor);
         System.out.println(test);
     }
+
+   
 
     
 

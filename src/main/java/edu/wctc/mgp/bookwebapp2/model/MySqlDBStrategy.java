@@ -20,13 +20,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.Dependent;
+
 
 /**
  *
  * @author Matthew_2
  */
-@SessionScoped
+@Dependent
 public class MySqlDBStrategy implements DBStrategy,Serializable {
 
     private Connection conn;
@@ -225,7 +226,7 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
 
     //boolean type? better for UI?
     @Override
-    public int insertRecord(String tableName, List <String> columnNames, List <Object>columnValues) throws SQLException{ 
+    public boolean insertRecord(String tableName, List <String> columnNames, List <Object>columnValues) throws SQLException{ 
         int recordsInserted = 0;
         PreparedStatement preSmt = null;
         
@@ -261,9 +262,13 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
                 throw e;
             } // end try
         } // end finally
+        if (recordsInserted == 1) {
+            return true;
+        } else {
+            return false;
+        }
         
-        
-         return recordsInserted;
+         
     }
     
     
