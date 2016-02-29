@@ -68,7 +68,10 @@ public class AuthorService implements Serializable{
         return dao;
     }
 
-    public void setDao(AuthorDAOStrategy dao) {
+    public void setDao(AuthorDAOStrategy dao) throws NullPointerException {
+         if(dao == null){
+            throw new NullPointerException();
+        }
         this.dao = dao;
     }
 

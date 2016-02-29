@@ -30,10 +30,16 @@ public class AuthorController extends HttpServlet {
 
     //add more constants later
     private static final String AUTHOR_RESP_VIEW = "/AuthorResponse.jsp";
-    //private static final String DELETE_RESP_VIEW = "DeleteAuthorResponse.jsp";
     private static final String AUTHOR_ADD_VIEW = "/Add.jsp";
     private static final String AUTHOR_EDIT_VIEW = "/Edit.jsp";
-
+    private static final String VIEWAUTHORS_ACTION = "viewAuthors";
+    private static final String ADD_EDIT_DEL_PARM = "AEDAuthor";
+    private static final String EDIT_ACTION = "Edit";
+    private static final String ADD_ACTION = "Add";
+    private static final String SAVE_ACTION = "Save";
+    private static final String CANCEL_ACTION = "Cancel";
+    private static final String PARAM_ERROR_MSG = "No or Wrong parameter identified";
+    
     private String driverClass;
     private String url;
     private String userName;
@@ -62,59 +68,65 @@ public class AuthorController extends HttpServlet {
             //uses init parameters to config database connection
             configDBConnection();
 
-            if (taskType.equals("viewAuthors")) {
-                //this to retrieve from the private method belonging to the controller
-                this.retrieveList(request, as);
-                destination = AUTHOR_RESP_VIEW;
+            switch (taskType) {
+                case VIEWAUTHORS_ACTION:
+                    //this to retrieve from the private method belonging to the controller
+                    this.retrieveList(request, as);
+                    destination = AUTHOR_RESP_VIEW;
+                    break;
+                case ADD_EDIT_DEL_PARM:
+                    String subTaskType = request.getParameter("submit");
+                    switch (subTaskType) {
+                        case "Delete":
+                            String authorID = request.getParameter("authorId");
+                            String deleteType = request.getParameter("my-checkbox");
+                            //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
+                            List<Object> ids = new ArrayList();
+                            if (Boolean.valueOf(deleteType) == false) { //multi
 
-            } else if (taskType.equals("AEDAuthor")) {
-                String subTaskType = request.getParameter("submit");
-                if (subTaskType.equals("Delete")) {
-                    String authorID = request.getParameter("authorId");
+                                //ids.addAll(Arrays.asList(authorIds));
+                                for (Object id : authorIds) {
+                                    ids.add(id);
+                                }
+                                as.deleteAuthorsbyIDs(ids);
+                                this.retrieveList(request, as);
+                                destination = AUTHOR_RESP_VIEW;
 
-                    String deleteType = request.getParameter("my-checkbox");
-                    //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
-                    List<Object> ids = new ArrayList();
-                    if (Boolean.valueOf(deleteType) == false) { //multi
-                        
-                         //ids.addAll(Arrays.asList(authorIds));
-                        for (Object id : authorIds) {
-                            ids.add(id);
-                        }
-                        as.deleteAuthorsbyIDs(ids);          
-                        this.retrieveList(request, as);
-                        destination = AUTHOR_RESP_VIEW;
+                            } else if (Boolean.valueOf(deleteType) == true) {//single
 
-                    } else if (Boolean.valueOf(deleteType) == true) {//single
-
-                        as.deleteAuthorbyID(authorID);
-                        this.retrieveList(request, as);
-                        destination = AUTHOR_RESP_VIEW;
+                                as.deleteAuthorbyID(authorID);
+                                this.retrieveList(request, as);
+                                destination = AUTHOR_RESP_VIEW;
+                            }
+                            break;
+                        case EDIT_ACTION:
+                            String authorId = authorIds[0]; //first of checked
+                            Author author = as.getAuthorById(authorId);
+                            request.setAttribute("author", author);
+                            destination = AUTHOR_EDIT_VIEW;
+                            break;
+                        case ADD_ACTION:
+                            destination = AUTHOR_ADD_VIEW;
+                            break;
+                        default:
+                            break;
                     }
-
-                  
-
-                } else if (subTaskType.equals("Edit")) {
-                    String authorId = authorIds[0]; //first of checked
-                    Author author = as.getAuthorById(authorId);
-                    request.setAttribute("author", author);
-                    destination = AUTHOR_EDIT_VIEW;
-                } else if (subTaskType.equals("Add")) {
-                    destination = AUTHOR_ADD_VIEW;
-                }
-            } else if (taskType.equals("Cancel")) {
-                this.retrieveList(request, as);
-                destination = AUTHOR_RESP_VIEW;
-            } else if (taskType.equals("Save")) {
-                String authorName = request.getParameter("authorName");
-                String authorId = request.getParameter("authorId");
-                as.saveAuthor(authorId, authorName);
-                this.retrieveList(request, as);
-                destination = AUTHOR_RESP_VIEW;
-            }
-            else{
-                 request.setAttribute("errorMsg", "No or Wrong parameter identified");
-                 destination = AUTHOR_RESP_VIEW;
+                    break;
+                case CANCEL_ACTION:
+                    this.retrieveList(request, as);
+                    destination = AUTHOR_RESP_VIEW;
+                    break;
+                case SAVE_ACTION:
+                    String authorName = request.getParameter("authorName");
+                    String authorId = request.getParameter("authorId");
+                    as.saveAuthor(authorId, authorName);
+                    this.retrieveList(request, as);
+                    destination = AUTHOR_RESP_VIEW;
+                    break;
+                default:
+                    request.setAttribute("errorMsg", PARAM_ERROR_MSG);
+                    destination = AUTHOR_RESP_VIEW;
+                    break;
             }
 
         } catch (Exception e) {
@@ -133,7 +145,7 @@ public class AuthorController extends HttpServlet {
     }
 
     private void configDBConnection() {
-        as.getDao().initDAO(driverClass, url,userName, pwd);
+        as.getDao().initDAO(driverClass, url, userName, pwd);
     }
 
     @Override

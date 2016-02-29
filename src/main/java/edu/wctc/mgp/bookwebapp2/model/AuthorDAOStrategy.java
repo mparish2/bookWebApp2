@@ -30,23 +30,23 @@ public interface AuthorDAOStrategy {
 
     public DBStrategy getDb();
 
-    public void setDb(DBStrategy db);
+    public void setDb(DBStrategy db)throws NullPointerException;
 
     public void initDAO(String driver, String url, String user, String pwd);
 
-    public void setPwd(String PWD);
+    public void setPwd(String pwd)throws NullPointerException;
 
     public String getPwd();
 
-    public void setUser(String USER);
+    public void setUser(String user)throws NullPointerException;
 
     public String getUser();
 
-    public void setUrl(String URL);
+    public void setUrl(String url)throws NullPointerException;
 
     public String getUrl();
 
-    public void setDriver(String DRIVER);
+    public void setDriver(String driver)throws NullPointerException;
 
     public String getDriver();
     

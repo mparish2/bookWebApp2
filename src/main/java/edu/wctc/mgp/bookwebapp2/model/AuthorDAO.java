@@ -175,7 +175,10 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public void setDriver(String driver) throws NullPointerException{
+        if(driver == null || driver.isEmpty()){
+            throw new NullPointerException();
+        }
         this.driver = driver;
     }
 
@@ -183,7 +186,10 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(String url) throws NullPointerException {
+        if(url == null || url.isEmpty()){
+            throw new NullPointerException();
+        }
         this.url = url;
     }
 
@@ -191,7 +197,10 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(String user) throws NullPointerException {
+        if(user == null || user.isEmpty()){
+            throw new NullPointerException();
+        }
         this.user = user;
     }
 
@@ -199,7 +208,10 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         return pwd;
     }
 
-    public void setPwd(String pwd) {
+    public void setPwd(String pwd) throws NullPointerException {
+        if(pwd == null || pwd.isEmpty()){
+            throw new NullPointerException();
+        }
         this.pwd = pwd;
     }
     
@@ -210,7 +222,10 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     }
 
     @Override
-    public void setDb(DBStrategy db) {
+    public void setDb(DBStrategy db) throws NullPointerException{
+        if(db == null){
+            throw new NullPointerException();
+        }
         this.db = db;
     }
 

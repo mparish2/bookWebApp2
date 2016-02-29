@@ -30,7 +30,7 @@
                     <label for="deleteToggle">
                         Delete Type
                     </label>
-                    <input type="checkbox"  id="deleteToggle" name="my-checkbox" value="true" data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Single" data-off-text="Multi" data-off-color="warning" checked=true>
+                    <input type="checkbox"  id="deleteToggle" name="my-checkbox" value="true" data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Single" data-off-text="Multiple" data-off-color="warning" checked=true>
                     <!--<label>This Switch is Set to
                         <label id="CheckBoxValue2" value="None"></label>
                     </label -->
@@ -77,22 +77,11 @@
         </div>
        
 
-        
-
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="Content/bootstrap-switch.min.js"></script>
         <script>
             $("[name='my-checkbox']").bootstrapSwitch();
-            
-            //$("[name='my-checkbox']").bootstrapSwitch('state', true);
-
-           /// $('#CheckBoxValue2').text($("#deleteToggle").bootstrapSwitch('state'));
-
-            // $('#deleteToggle').on('switchChange.bootstrapSwitch', function () {
-
-              //  $("#CheckBoxValue2").text($('#deleteToggle').bootstrapSwitch('state'));
-          //  });
         </script>
 
     </body>
