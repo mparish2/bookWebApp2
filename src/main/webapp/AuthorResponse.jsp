@@ -12,7 +12,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Author Management</title>
         <link rel="stylesheet" href="Content/BookWebApp.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link href="Content/bootstrap-switch.min.css" rel="stylesheet">
@@ -27,11 +27,14 @@
 
             <form method="POST" action="AuthorController?taskType=AEDAuthor">
                   <div id="deleteToggleContent" class="bootstrap-switch-container">
-                        <label for="deleteToggle">
-                            Delete Type
-                        </label>
-                        <input type="checkbox" id="deleteToggle" name="my-checkbox"  data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Multi" data-off-text="Single" checked >
-                    </div>
+                    <label for="deleteToggle">
+                        Delete Type
+                    </label>
+                    <input type="checkbox"  id="deleteToggle" name="my-checkbox" value="true" data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Single" data-off-text="Multi" data-off-color="warning" checked=true>
+                    <!--<label>This Switch is Set to
+                        <label id="CheckBoxValue2" value="None"></label>
+                    </label -->
+                </div>
                 <div class="input-group" id="aedButtons">
                     <input type="submit" class="btn btn-success" value="Add" name="submit" >
                     <input type="submit" class="btn btn-warning" value="Edit" name="submit" />&nbsp;&nbsp;
@@ -65,18 +68,31 @@
 
                 <br>
                 <br>
+               
             </form>
-            <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.html">Go Back</a></button>
+             <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.html">Go Back</a></button>
+             <p id="errors">${errorMsg}</p>
+             
+              
         </div>
        
 
-        <p>${errorMsg}</p>
+        
 
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="Content/bootstrap-switch.min.js"></script>
         <script>
             $("[name='my-checkbox']").bootstrapSwitch();
+            
+            //$("[name='my-checkbox']").bootstrapSwitch('state', true);
+
+           /// $('#CheckBoxValue2').text($("#deleteToggle").bootstrapSwitch('state'));
+
+            // $('#deleteToggle').on('switchChange.bootstrapSwitch', function () {
+
+              //  $("#CheckBoxValue2").text($('#deleteToggle').bootstrapSwitch('state'));
+          //  });
         </script>
 
     </body>

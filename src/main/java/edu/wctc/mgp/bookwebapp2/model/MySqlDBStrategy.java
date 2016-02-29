@@ -328,7 +328,40 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
          final String finalSQL = ((sql.toString()).substring(0,(sql.toString()).lastIndexOf(", ") ) + ")" );
          return conn.prepareStatement(finalSQL);
     }
-    
+    public int deleteRecordsbyPrimaryKey(String tableName, String primarykeyName, List<Object> primaryKeyValues) throws SQLException{
+        PreparedStatement pstmt = null;
+        int recordsDeleted = 0;
+        
+        try{
+        pstmt = buildDeleteStatement(conn,tableName,primarykeyName, primaryKeyValues);
+         final Iterator i = primaryKeyValues.iterator();
+            int index = 1; // prepared statements start at 1 (w/ the "?"(s) )
+            Object obj = null;
+           while (i.hasNext()) {
+                obj = i.next();
+                pstmt.setObject(index++, obj);
+           } 
+       
+            recordsDeleted = pstmt.executeUpdate();
+        }catch(Exception e){
+            throw e;
+        }try {
+                pstmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                throw e;
+            }
+        
+         return recordsDeleted;
+    }
+    private PreparedStatement buildDeleteStatement(Connection conn,String tableName,Object primaryKeyName,List<Object> primaryKeyValues) throws SQLException{
+        StringBuffer sql = new StringBuffer("Delete From " + tableName + " Where " + primaryKeyName + " IN (");
+        for (int m = 0; m < primaryKeyValues.size();m++){
+             sql.append("?, ");
+        }
+        final String finalSQL = ((sql.toString()).substring(0,(sql.toString()).lastIndexOf(", ") ) + ")" );
+        return conn.prepareStatement(finalSQL);
+    }
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         DBStrategy db = new MySqlDBStrategy();
@@ -339,6 +372,13 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
         System.out.println(rawData);
         db.closeConnection();
 
+         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+         List<Object> primaryKeyValues = new ArrayList();
+         primaryKeyValues.add("69");
+         primaryKeyValues.add("70");
+         int result = db.deleteRecordsbyPrimaryKey("author","author_id", primaryKeyValues);
+          db.closeConnection();
+         
        // db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
 
 //        List<String> colNames = Arrays.asList("author_name", "date_added");
@@ -354,11 +394,12 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
         
         System.out.println("---------");
         
-        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        List<String> colNames2 = Arrays.asList("author_name", "date_added");
-        List<Object> colValues2 = Arrays.asList("Lex Luther", "2014-03-15");
-        db.insertRecord("author", colNames2, colValues2);
-        db.closeConnection();
+//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//        List<String> colNames2 = Arrays.asList("author_name", "date_added");
+//        List<Object> colValues2 = Arrays.asList("Lex Luther", "2014-03-15");
+//        db.insertRecord("author", colNames2, colValues2);
+//        db.closeConnection();
+//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
         List<Map<String, Object>> rawData3 = db.findAllRecords("author", 0);
         System.out.println(rawData3);

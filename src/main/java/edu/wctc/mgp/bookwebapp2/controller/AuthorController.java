@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import edu.wctc.mgp.bookwebapp2.model.Author;
 import edu.wctc.mgp.bookwebapp2.model.AuthorService;
 import edu.wctc.mgp.bookwebapp2.model.MockAuthorDAO;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.inject.Inject;
 
 /**
@@ -31,12 +33,12 @@ public class AuthorController extends HttpServlet {
     //private static final String DELETE_RESP_VIEW = "DeleteAuthorResponse.jsp";
     private static final String AUTHOR_ADD_VIEW = "/Add.jsp";
     private static final String AUTHOR_EDIT_VIEW = "/Edit.jsp";
-    
+
     private String driverClass;
     private String url;
     private String userName;
     private String pwd;
-    
+
     @Inject
     private AuthorService as;
 
@@ -56,10 +58,10 @@ public class AuthorController extends HttpServlet {
         try {
             String taskType = request.getParameter("taskType");
             String[] authorIds = request.getParameterValues("authorId");
-            
+
             //uses init parameters to config database connection
             configDBConnection();
-            
+
             if (taskType.equals("viewAuthors")) {
                 //this to retrieve from the private method belonging to the controller
                 this.retrieveList(request, as);
@@ -68,36 +70,53 @@ public class AuthorController extends HttpServlet {
             } else if (taskType.equals("AEDAuthor")) {
                 String subTaskType = request.getParameter("submit");
                 if (subTaskType.equals("Delete")) {
-                   
+                    String authorID = request.getParameter("authorId");
+
+                    String deleteType = request.getParameter("my-checkbox");
                     //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
-                    for (String id : authorIds) {
-                            as.deleteAuthorbyID(id);
+                    List<Object> ids = new ArrayList();
+                    if (Boolean.valueOf(deleteType) == false) { //multi
+                        
+                         //ids.addAll(Arrays.asList(authorIds));
+                        for (Object id : authorIds) {
+                            ids.add(id);
                         }
-                    
-                    this.retrieveList(request, as);
-                    destination = AUTHOR_RESP_VIEW;
-                    
-                }else if(subTaskType.equals("Edit")){
+                        as.deleteAuthorsbyIDs(ids);          
+                        this.retrieveList(request, as);
+                        destination = AUTHOR_RESP_VIEW;
+
+                    } else if (Boolean.valueOf(deleteType) == true) {//single
+
+                        as.deleteAuthorbyID(authorID);
+                        this.retrieveList(request, as);
+                        destination = AUTHOR_RESP_VIEW;
+                    }
+
+                  
+
+                } else if (subTaskType.equals("Edit")) {
                     String authorId = authorIds[0]; //first of checked
                     Author author = as.getAuthorById(authorId);
                     request.setAttribute("author", author);
                     destination = AUTHOR_EDIT_VIEW;
-                } else if(subTaskType.equals("Add")){
+                } else if (subTaskType.equals("Add")) {
                     destination = AUTHOR_ADD_VIEW;
                 }
-            }
-            else if(taskType.equals("Cancel")){
+            } else if (taskType.equals("Cancel")) {
+                this.retrieveList(request, as);
+                destination = AUTHOR_RESP_VIEW;
+            } else if (taskType.equals("Save")) {
+                String authorName = request.getParameter("authorName");
+                String authorId = request.getParameter("authorId");
+                as.saveAuthor(authorId, authorName);
                 this.retrieveList(request, as);
                 destination = AUTHOR_RESP_VIEW;
             }
-            else if(taskType.equals("Save")){
-                 String authorName = request.getParameter("authorName");
-                 String authorId = request.getParameter("authorId");
-                 as.saveAuthor(authorId, authorName);
-                 this.retrieveList(request, as);
+            else{
+                 request.setAttribute("errorMsg", "No or Wrong parameter identified");
                  destination = AUTHOR_RESP_VIEW;
             }
-           
+
         } catch (Exception e) {
             request.setAttribute("errorMsg", e.getMessage());
         }
@@ -112,13 +131,13 @@ public class AuthorController extends HttpServlet {
         List<Author> authors = as.getAuthorList();
         request.setAttribute("authors", authors);
     }
-    
-    private void configDBConnection(){
-        as.getDao().initDAO(driverClass, url, userName, pwd);
+
+    private void configDBConnection() {
+        as.getDao().initDAO(driverClass, url,userName, pwd);
     }
-    
+
     @Override
-    public void init() throws ServletException{
+    public void init() throws ServletException {
         driverClass = getServletContext().getInitParameter("db.driver.class");
         url = getServletContext().getInitParameter("db.url");
         userName = getServletContext().getInitParameter("db.username");

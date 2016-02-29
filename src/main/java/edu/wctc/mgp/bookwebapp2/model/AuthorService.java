@@ -8,6 +8,7 @@ package edu.wctc.mgp.bookwebapp2.model;
 import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
@@ -46,6 +47,10 @@ public class AuthorService implements Serializable{
         return dao.updatebyID(author);
     }
 
+    public int deleteAuthorsbyIDs(List<Object> primaryKeyValues) throws ClassNotFoundException, SQLException{
+        return dao.deleteAuthorsbyIDs(primaryKeyValues);
+    }
+    
     public void saveAuthor(String authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException{
         Integer id = null; 
         if(authorId == null || authorId.isEmpty()) {
@@ -72,9 +77,12 @@ public class AuthorService implements Serializable{
         List<Author> authors = srv.getAuthorList();
         System.out.println(authors);
 
-        Author testAuthor = new Author(6, "Mark Twain", new Date());
-        srv.addAuthor(testAuthor);
+//        Author testAuthor = new Author(6, "Mark Twain", new Date());
+//        srv.addAuthor(testAuthor);
 
+        
+         
+        
         List<Author> authors2 = srv.getAuthorList();
         System.out.println(authors2);
         

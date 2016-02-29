@@ -32,4 +32,6 @@ public interface DBStrategy {
 
      public Map<String, Object> findById(String tableName, String primaryColName,
             Object primaryKeyValue) throws DataAccessException, ClassNotFoundException, SQLException;
+     
+     public int deleteRecordsbyPrimaryKey(String tableName, String primarykeyName, List<Object> primaryKeyValues) throws SQLException;
 }

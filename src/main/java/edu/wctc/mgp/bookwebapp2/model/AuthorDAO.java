@@ -101,6 +101,14 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         return numAuthor;
     }
 
+    @Override
+    public int deleteAuthorsbyIDs(List<Object> primaryKeyValues) throws ClassNotFoundException, SQLException {
+        db.openConnection(driver, url, user, pwd);
+        int numAuthors = db.deleteRecordsbyPrimaryKey(TABLE_NAME, AUTHOR_ID, primaryKeyValues);
+        db.closeConnection();
+        return numAuthors;
+    }
+    
     /**
      *
      * @param author
@@ -216,14 +224,21 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     }
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-
+        
         AuthorDAOStrategy dao = new AuthorDAO();
         List<Author> authors = dao.getAuthorList();
         System.out.println(authors);
 
-        Author testAuthor = new Author("Matthew Parish", new Date());
-        boolean test = dao.addAuthor(testAuthor);
-        System.out.println(test);
+//        List<Object> primaryKeyValues = new ArrayList();
+//         primaryKeyValues.add("71");
+//         primaryKeyValues.add("72");
+//         int result = dao.deleteAuthorsbyIDs(primaryKeyValues);
+        
+//          List<Author> authors2 = dao.getAuthorList();
+//        System.out.println(authors2);
+//        Author testAuthor = new Author("Matthew Parish", new Date());
+//        boolean test = dao.addAuthor(testAuthor);
+//        System.out.println(test);
     }
 
    

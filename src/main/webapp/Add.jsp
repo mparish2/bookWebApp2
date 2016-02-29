@@ -27,6 +27,7 @@
                 <input type="submit" class="btn btn-info" value="Cancel" name="taskType" />
                 <input type="submit" class="btn btn-success" value="Save" name="taskType" />
             </form>
+                 <p id="errors">${errorMsg}</p>
         </div>
         
         

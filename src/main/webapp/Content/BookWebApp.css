@@ -17,6 +17,12 @@
     background-color: lightyellow;
     margin-top: 40px;
 }
+#errors{
+    background-color: red;
+    background-image: radial-gradient(red,#ff4d4d);
+    text-align:center;
+    color: white;
+}
 #deleteToggleContent{
     text-align: right;
 }

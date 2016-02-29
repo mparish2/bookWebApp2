@@ -19,6 +19,8 @@ public interface AuthorDAOStrategy {
     List<Author> getAuthorList() throws ClassNotFoundException, SQLException;
 
     public int deleteAuthorbyID(Object primaryKeyValue) throws SQLException, ClassNotFoundException;
+     
+    public int deleteAuthorsbyIDs(List <Object> primaryKeyValues) throws ClassNotFoundException, SQLException;
 
     public int updatebyID(Author author) throws SQLException;
 
