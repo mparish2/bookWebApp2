@@ -35,6 +35,7 @@ public class AuthorController extends HttpServlet {
     private static final String VIEWAUTHORS_ACTION = "viewAuthors";
     private static final String ADD_EDIT_DEL_PARM = "AEDAuthor";
     private static final String EDIT_ACTION = "Edit";
+    private static final String DELETE_ACTION = "Delete";
     private static final String ADD_ACTION = "Add";
     private static final String SAVE_ACTION = "Save";
     private static final String CANCEL_ACTION = "Cancel";
@@ -77,7 +78,7 @@ public class AuthorController extends HttpServlet {
                 case ADD_EDIT_DEL_PARM:
                     String subTaskType = request.getParameter("submit");
                     switch (subTaskType) {
-                        case "Delete":
+                        case DELETE_ACTION:
                             String authorID = request.getParameter("authorId");
                             String deleteType = request.getParameter("my-checkbox");
                             //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
