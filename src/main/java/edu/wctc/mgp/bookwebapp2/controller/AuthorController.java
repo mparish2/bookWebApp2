@@ -20,6 +20,7 @@ import edu.wctc.mgp.bookwebapp2.model.MockAuthorDAO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -40,6 +41,8 @@ public class AuthorController extends HttpServlet {
     private static final String SAVE_ACTION = "Save";
     private static final String CANCEL_ACTION = "Cancel";
     private static final String PARAM_ERROR_MSG = "No or Wrong parameter identified";
+    private static final String LOGIN = "Login";
+    private static final String LOGOUT = "Logout";
     
     private String driverClass;
     private String url;
@@ -62,6 +65,7 @@ public class AuthorController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String destination = AUTHOR_RESP_VIEW;
+        HttpSession session = request.getSession();
         try {
             String taskType = request.getParameter("taskType");
             String[] authorIds = request.getParameterValues("authorId");
@@ -70,6 +74,15 @@ public class AuthorController extends HttpServlet {
             configDBConnection();
 
             switch (taskType) {
+                case LOGIN:
+                    String message = request.getParameter("loginTxtBox");
+                    session.setAttribute("message", message);
+                    destination = "/index.jsp";
+                    break;
+                case LOGOUT:
+                    session.invalidate();
+                    destination = "/index.jsp";
+                    break;
                 case VIEWAUTHORS_ACTION:
                     //this to retrieve from the private method belonging to the controller
                     this.retrieveList(request, as);

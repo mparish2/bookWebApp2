@@ -18,16 +18,25 @@
         <link href="Content/bootstrap-switch.min.css" rel="stylesheet">
     </head>
     <body>
-        <h2>Author Table!</h2>
+        
+        <div class="logoutArea">
+            
+             <form method="POST" action="AuthorController?taskType=Logout">
+                <p id="welcomeMessAuth">Welcome  ${message} <input type="submit" class="btn btn-primary" value="Logout" id="logout" name="taskType" /></p>
+             </form>
+           
+        </div>
+       
+        <h2>Author Table!  </h2>  
         <div class="container" id="tableContent">
-
+            
             
 
             <br>
 
             <form method="POST" action="AuthorController?taskType=AEDAuthor">
                   <div id="deleteToggleContent" class="bootstrap-switch-container">
-                    <label for="deleteToggle">
+                    <label id="deleteLabel" for="deleteToggle">
                         Delete Type
                     </label>
                     <input type="checkbox"  id="deleteToggle" name="my-checkbox" value="true" data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Single" data-off-text="Multiple" data-off-color="warning" checked=true>
@@ -70,7 +79,7 @@
                 <br>
                
             </form>
-             <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.html">Go Back</a></button>
+             <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.jsp">Go Back</a></button>
              <p id="errors">${errorMsg}</p>
              
               

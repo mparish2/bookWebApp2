@@ -151,17 +151,27 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         }
     }
 
+    /**
+     *  Combines addAuthor and updatebyId
+     * 
+     * @param authorId
+     * @param authorName
+     * @return
+     * @throws DataAccessException
+     * @throws SQLException
+     * @throws ClassNotFoundException 
+     */
       @Override
     public boolean saveAuthor(Integer authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException {
         db.openConnection(driver, url, user, pwd);
         boolean result = false;
         
         if(authorId == null || authorId.equals(0)) {
-            result = db.insertRecord("author", Arrays.asList("author_name","date_added"), 
+            result = db.insertRecord(TABLE_NAME, Arrays.asList("author_name",DATE_ADDED), 
                                       Arrays.asList(authorName,new Date()));
         } else {
-            // must be an update of an existing record
-            int recsUpdated = db.updatebyID("author", Arrays.asList("author_name"), 
+            //an update of an existing record
+            int recsUpdated = db.updatebyID(TABLE_NAME, Arrays.asList("author_name"), 
                                        Arrays.asList(authorName),
                                        "author_id", authorId);
             if(recsUpdated > 0) {

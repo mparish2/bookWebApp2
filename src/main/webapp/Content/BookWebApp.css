@@ -1,3 +1,28 @@
+
+.welcomeMessage{
+    text-align: center;
+    font-weight: 400;
+    font-style:italic;
+    font-size: 42px;
+    margin-bottom: 0px;
+    margin-top: 4px;
+    text-shadow: 1px 1.2px lightgrey;
+}
+.logoutArea{
+    text-align: right;
+    margin-right: 100px;
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+header {
+    text-align: right;
+}
+#login{
+    margin-top: 10px;
+}
+#logout{
+    margin-left: 65.99%;
+}
 #HomeBody{
     background-image: url('BookArch.jpg');
     background-repeat:no-repeat;
@@ -34,8 +59,9 @@ h2{
 #indexH2{
     border-bottom: 1px solid black;
     padding-bottom: 5px;
+    margin-top: 6px;
 }
-label{
+#deleteLabel {
     color:white;
     font-weight: bolder;
     font-size: 16.2px;
