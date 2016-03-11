@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  *
@@ -27,7 +28,8 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
 
     @Inject
     private DBStrategy db;
-    
+
+    private DataSource ds;
     private String driver;
     private String url;
     private String user;
@@ -40,30 +42,37 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
 
     public AuthorDAO() {
     }
-    
-    
-     @Override
-    public Author getAuthorById(int authorId)  throws DataAccessException, ClassNotFoundException, SQLException{
-       db.openConnection(driver, url, user, pwd);
-        
-        Map<String,Object> sinRec = db.findById(TABLE_NAME,AUTHOR_ID, authorId);
+
+    @Override
+    public Author getAuthorById(int authorId) throws DataAccessException, ClassNotFoundException, SQLException {
+        if (ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
+
+        Map<String, Object> sinRec = db.findById(TABLE_NAME, AUTHOR_ID, authorId);
         Author author = new Author();
-        author.setAuthorId((Integer)sinRec.get("author_id"));
+        author.setAuthorId((Integer) sinRec.get("author_id"));
         author.setAuthorName(sinRec.get("author_name").toString());
-        author.setDateAdded((Date)sinRec.get("date_added"));
-        
+        author.setDateAdded((Date) sinRec.get("date_added"));
+
         return author;
     }
-    
+
     /**
      *
      * @return @throws ClassNotFoundException
      * @throws SQLException
      */
     @Override
-    public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
+    public List<Author> getAuthorList() throws ClassNotFoundException, SQLException, DataAccessException {
 
-        db.openConnection(driver, url, user, pwd); //rigid for now. will fix later
+        if (ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
 
         //turning a listOmaps to listOauthors
         List<Map<String, Object>> rawData = db.findAllRecords(TABLE_NAME, 0);
@@ -84,7 +93,6 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         db.closeConnection();
         return authors;
     }
-      
 
     /**
      *
@@ -94,21 +102,29 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
      * @throws ClassNotFoundException
      */
     @Override
-    public int deleteAuthorbyID(Object primaryKeyValue) throws SQLException, ClassNotFoundException {
-        db.openConnection(driver, url, user, pwd);
+    public int deleteAuthorbyID(Object primaryKeyValue) throws SQLException, DataAccessException, ClassNotFoundException {
+        if (ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
         int numAuthor = db.deleteRecordbyPrimaryKey(TABLE_NAME, AUTHOR_ID, primaryKeyValue);
         db.closeConnection();
         return numAuthor;
     }
 
     @Override
-    public int deleteAuthorsbyIDs(List<Object> primaryKeyValues) throws ClassNotFoundException, SQLException {
-        db.openConnection(driver, url, user, pwd);
+    public int deleteAuthorsbyIDs(List<Object> primaryKeyValues) throws ClassNotFoundException, DataAccessException, SQLException {
+        if (ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
         int numAuthors = db.deleteRecordsbyPrimaryKey(TABLE_NAME, AUTHOR_ID, primaryKeyValues);
         db.closeConnection();
         return numAuthors;
     }
-    
+
     /**
      *
      * @param author
@@ -118,7 +134,11 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     @Override
     public int updatebyID(Author author) throws SQLException {
         try {
-            db.openConnection(driver, url, user, pwd);
+            if (ds == null) {
+                db.openConnection(driver, url, user, pwd);
+            } else {
+                db.openConnection(ds);
+            }
             List<String> authorColumns = Arrays.asList(AUTHOR_NAME, DATE_ADDED);;
             List<Object> authorValues = Arrays.asList(author.getAuthorName(), author.getDateAdded());
             int numAuthor = db.updatebyID(TABLE_NAME, authorColumns, authorValues, AUTHOR_ID, author.getAuthorId());
@@ -132,12 +152,15 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         }
 
     }
-    
-    
+
     @Override
-    public boolean addAuthor(Author author) throws SQLException{
+    public boolean addAuthor(Author author) throws SQLException {
         try {
-            db.openConnection(driver, url, user, pwd);
+            if (ds == null) {
+                db.openConnection(driver, url, user, pwd);
+            } else {
+                db.openConnection(ds);
+            }
             List<String> authorColumns = Arrays.asList(AUTHOR_NAME, DATE_ADDED);;
             List<Object> authorValues = Arrays.asList(author.getAuthorName(), author.getDateAdded());
             boolean numAuthor = db.insertRecord(TABLE_NAME, authorColumns, authorValues);
@@ -152,29 +175,33 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     }
 
     /**
-     *  Combines addAuthor and updatebyId
-     * 
+     * Combines addAuthor and updatebyId
+     *
      * @param authorId
      * @param authorName
      * @return
      * @throws DataAccessException
      * @throws SQLException
-     * @throws ClassNotFoundException 
+     * @throws ClassNotFoundException
      */
-      @Override
+    @Override
     public boolean saveAuthor(Integer authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException {
-        db.openConnection(driver, url, user, pwd);
+        if (ds == null) {
+            db.openConnection(driver, url, user, pwd);
+        } else {
+            db.openConnection(ds);
+        }
         boolean result = false;
-        
-        if(authorId == null || authorId.equals(0)) {
-            result = db.insertRecord(TABLE_NAME, Arrays.asList("author_name",DATE_ADDED), 
-                                      Arrays.asList(authorName,new Date()));
+
+        if (authorId == null || authorId.equals(0)) {
+            result = db.insertRecord(TABLE_NAME, Arrays.asList("author_name", DATE_ADDED),
+                    Arrays.asList(authorName, new Date()));
         } else {
             //an update of an existing record
-            int recsUpdated = db.updatebyID(TABLE_NAME, Arrays.asList("author_name"), 
-                                       Arrays.asList(authorName),
-                                       "author_id", authorId);
-            if(recsUpdated > 0) {
+            int recsUpdated = db.updatebyID(TABLE_NAME, Arrays.asList("author_name"),
+                    Arrays.asList(authorName),
+                    "author_id", authorId);
+            if (recsUpdated > 0) {
                 result = true;
             }
         }
@@ -185,8 +212,8 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         return driver;
     }
 
-    public void setDriver(String driver) throws NullPointerException{
-        if(driver == null || driver.isEmpty()){
+    public void setDriver(String driver) throws NullPointerException {
+        if (driver == null || driver.isEmpty()) {
             throw new NullPointerException();
         }
         this.driver = driver;
@@ -197,7 +224,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     }
 
     public void setUrl(String url) throws NullPointerException {
-        if(url == null || url.isEmpty()){
+        if (url == null || url.isEmpty()) {
             throw new NullPointerException();
         }
         this.url = url;
@@ -208,7 +235,7 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     }
 
     public void setUser(String user) throws NullPointerException {
-        if(user == null || user.isEmpty()){
+        if (user == null || user.isEmpty()) {
             throw new NullPointerException();
         }
         this.user = user;
@@ -219,27 +246,41 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
     }
 
     public void setPwd(String pwd) throws NullPointerException {
-        if(pwd == null || pwd.isEmpty()){
+        if (pwd == null || pwd.isEmpty()) {
             throw new NullPointerException();
         }
         this.pwd = pwd;
     }
-    
-    
+
     @Override
     public DBStrategy getDb() {
         return db;
     }
 
     @Override
-    public void setDb(DBStrategy db) throws NullPointerException{
-        if(db == null){
+    public void setDb(DBStrategy db) throws NullPointerException {
+        if (db == null) {
             throw new NullPointerException();
         }
         this.db = db;
     }
 
-     @Override
+    @Override
+    public void initDao(DataSource ds) throws DataAccessException {
+        //this.ds = ds;
+        setDs(ds);
+    }
+
+    public DataSource getDs() {
+        return ds;
+    }
+
+    public void setDs(DataSource ds) {
+        //needs validation
+        this.ds = ds;
+    }
+
+    @Override
     public void initDAO(String driver, String url, String user, String pwd) {
         setDriver(driver);
         setUrl(url);
@@ -247,9 +288,9 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
         setPwd(pwd);
         //needs validation later (best practices)
     }
-    
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, DataAccessException {
+
         AuthorDAOStrategy dao = new AuthorDAO();
         List<Author> authors = dao.getAuthorList();
         System.out.println(authors);
@@ -258,20 +299,11 @@ public class AuthorDAO implements AuthorDAOStrategy, Serializable {
 //         primaryKeyValues.add("71");
 //         primaryKeyValues.add("72");
 //         int result = dao.deleteAuthorsbyIDs(primaryKeyValues);
-        
 //          List<Author> authors2 = dao.getAuthorList();
 //        System.out.println(authors2);
 //        Author testAuthor = new Author("Matthew Parish", new Date());
 //        boolean test = dao.addAuthor(testAuthor);
 //        System.out.println(test);
     }
-
-   
-
-    
-
-   
-
-  
 
 }

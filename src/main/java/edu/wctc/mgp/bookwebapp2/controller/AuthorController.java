@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.controller;
 
+import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -20,6 +21,11 @@ import edu.wctc.mgp.bookwebapp2.model.MockAuthorDAO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import javax.servlet.http.HttpSession;
 
 /**
@@ -48,6 +54,7 @@ public class AuthorController extends HttpServlet {
     private String url;
     private String userName;
     private String pwd;
+    private String dbJndiName;
 
     @Inject
     private AuthorService as;
@@ -158,16 +165,23 @@ public class AuthorController extends HttpServlet {
         request.setAttribute("authors", authors);
     }
 
-    private void configDBConnection() {
-        as.getDao().initDAO(driverClass, url, userName, pwd);
+    private void configDBConnection() throws DataAccessException, NamingException {
+        if(dbJndiName == null) {
+            as.getDao().initDAO(driverClass, url, userName, pwd);
+        } else{
+             Context ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
+            as.getDao().initDao(ds);
+        }
     }
 
     @Override
     public void init() throws ServletException {
-        driverClass = getServletContext().getInitParameter("db.driver.class");
-        url = getServletContext().getInitParameter("db.url");
-        userName = getServletContext().getInitParameter("db.username");
-        pwd = getServletContext().getInitParameter("db.password");
+//        driverClass = getServletContext().getInitParameter("db.driver.class");
+//        url = getServletContext().getInitParameter("db.url");
+//        userName = getServletContext().getInitParameter("db.username");
+//        pwd = getServletContext().getInitParameter("db.password");
+        dbJndiName = getServletContext().getInitParameter("db.jndi.name");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

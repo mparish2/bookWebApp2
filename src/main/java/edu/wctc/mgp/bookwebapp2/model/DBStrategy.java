@@ -9,6 +9,7 @@ import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 
 /**
  *
@@ -34,4 +35,14 @@ public interface DBStrategy {
             Object primaryKeyValue) throws DataAccessException, ClassNotFoundException, SQLException;
      
      public int deleteRecordsbyPrimaryKey(String tableName, String primarykeyName, List<Object> primaryKeyValues) throws SQLException;
+     
+     
+      /**
+     * Open a connection using a connection pool configured on server.
+     *
+     * @param ds - a reference to a connection pool via a JNDI name, producing
+     * this object. Typically done in a servlet using InitalContext object.
+     * @throws DataAccessException - if ds cannot be established
+     */
+    void openConnection(DataSource ds) throws DataAccessException;
 }

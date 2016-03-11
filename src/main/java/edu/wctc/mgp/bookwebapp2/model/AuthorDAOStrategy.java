@@ -9,6 +9,7 @@ import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 
 /**
  *
@@ -16,11 +17,11 @@ import java.util.Map;
  */
 public interface AuthorDAOStrategy {
 
-    List<Author> getAuthorList() throws ClassNotFoundException, SQLException;
+    List<Author> getAuthorList() throws ClassNotFoundException, SQLException, DataAccessException;
 
-    public int deleteAuthorbyID(Object primaryKeyValue) throws SQLException, ClassNotFoundException;
-     
-    public int deleteAuthorsbyIDs(List <Object> primaryKeyValues) throws ClassNotFoundException, SQLException;
+    public int deleteAuthorbyID(Object primaryKeyValue) throws SQLException,DataAccessException, ClassNotFoundException;
+
+    public int deleteAuthorsbyIDs(List<Object> primaryKeyValues) throws ClassNotFoundException,DataAccessException, SQLException;
 
     public int updatebyID(Author author) throws SQLException;
 
@@ -30,25 +31,28 @@ public interface AuthorDAOStrategy {
 
     public DBStrategy getDb();
 
-    public void setDb(DBStrategy db)throws NullPointerException;
+    public void setDb(DBStrategy db) throws NullPointerException;
+    
+    public abstract void initDao(DataSource ds) throws DataAccessException;
 
-    public void initDAO(String driver, String url, String user, String pwd);
+    public abstract void initDAO(String driver, String url, String user, String pwd) throws DataAccessException;
 
-    public void setPwd(String pwd)throws NullPointerException;
+
+    public void setPwd(String pwd) throws NullPointerException;
 
     public String getPwd();
 
-    public void setUser(String user)throws NullPointerException;
+    public void setUser(String user) throws NullPointerException;
 
     public String getUser();
 
-    public void setUrl(String url)throws NullPointerException;
+    public void setUrl(String url) throws NullPointerException;
 
     public String getUrl();
 
-    public void setDriver(String driver)throws NullPointerException;
+    public void setDriver(String driver) throws NullPointerException;
 
     public String getDriver();
-    
+
     public boolean saveAuthor(Integer authorId, String authorName) throws DataAccessException, SQLException, ClassNotFoundException;
 }

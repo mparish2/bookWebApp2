@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.sql.DataSource;
 
 
 /**
@@ -36,6 +37,23 @@ public class MySqlDBStrategy implements DBStrategy,Serializable {
     }
 
     //what would be better this or bring it in from the construct. think about/research
+    
+      /**
+     * Open a connection using a connection pool configured on server.
+     *
+     * @param ds - a reference to a connection pool via a JNDI name, producing
+     * this object. Typically done in a servlet using InitalContext object.
+     * @throws DataAccessException - if ds cannot be established
+     */
+    @Override
+    public final void openConnection(DataSource ds) throws DataAccessException {
+        try {
+            conn = ds.getConnection();
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex.getMessage(),ex.getCause());
+        }
+    }
+    
     /**
      *
      * @param driverClassName

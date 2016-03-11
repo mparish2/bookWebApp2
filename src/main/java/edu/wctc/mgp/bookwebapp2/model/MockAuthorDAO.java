@@ -14,6 +14,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import javax.enterprise.inject.Alternative;
+import javax.sql.DataSource;
 
 /**
  *
@@ -25,6 +26,8 @@ public class MockAuthorDAO implements AuthorDAOStrategy,Serializable{
     
     private DBStrategy db;
     
+     private DataSource ds;
+     
     private List<Author> authorList = new ArrayList<>();
    
     Author a1 = new Author(0,"Bob",new Date(0163,4,1));  
@@ -78,6 +81,10 @@ public class MockAuthorDAO implements AuthorDAOStrategy,Serializable{
     @Override
     public void initDAO(String driver, String url, String user, String pwd) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    @Override
+    public void initDao(DataSource ds) throws DataAccessException {
+        this.ds = ds;
     }
 
     @Override

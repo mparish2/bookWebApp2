@@ -17,12 +17,12 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link href="Content/bootstrap-switch.min.css" rel="stylesheet">
     </head>
-    <body>
+    <body id="authorRespBody">
         
-        <div class="logoutArea">
-            
+        <div class="logoutArea container">
              <form method="POST" action="AuthorController?taskType=Logout">
-                <p id="welcomeMessAuth">Welcome  ${message} <input type="submit" class="btn btn-primary" value="Logout" id="logout" name="taskType" /></p>
+                <p id="welcomeMessAuth">Welcome  ${message}</p>
+                <input type="submit" class="btn btn-primary" value="Logout" id="logout" name="taskType" />
              </form>
            
         </div>
