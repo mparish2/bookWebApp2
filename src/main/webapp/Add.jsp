@@ -20,7 +20,7 @@
             <table id="authorTable" class="table table-striped table-responsive"> 
                 <tr>
                     <td>Name</td>
-                    <td><input type="text" value="${author.authorName}" name="authorName" /></td>
+                    <td><input type="text"  name="authorName" /></td>
                 </tr>
               
             </table>

@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.controller;
 
+import edu.wctc.mgp.bookwebapp2.ejb.AuthorFacade;
 import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,8 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import edu.wctc.mgp.bookwebapp2.model.Author;
-import edu.wctc.mgp.bookwebapp2.model.AuthorService;
-import edu.wctc.mgp.bookwebapp2.model.MockAuthorDAO;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.inject.Inject;
@@ -49,15 +49,9 @@ public class AuthorController extends HttpServlet {
     private static final String PARAM_ERROR_MSG = "No or Wrong parameter identified";
     private static final String LOGIN = "Login";
     private static final String LOGOUT = "Logout";
-    
-    private String driverClass;
-    private String url;
-    private String userName;
-    private String pwd;
-    private String dbJndiName;
 
     @Inject
-    private AuthorService as;
+    private AuthorFacade as;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -71,14 +65,13 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         String destination = AUTHOR_RESP_VIEW;
         HttpSession session = request.getSession();
+
         try {
             String taskType = request.getParameter("taskType");
             String[] authorIds = request.getParameterValues("authorId");
-
-            //uses init parameters to config database connection
-            configDBConnection();
 
             switch (taskType) {
                 case LOGIN:
@@ -92,7 +85,7 @@ public class AuthorController extends HttpServlet {
                     break;
                 case VIEWAUTHORS_ACTION:
                     //this to retrieve from the private method belonging to the controller
-                    this.retrieveList(request, as);
+                    this.retrieveList(request);
                     destination = AUTHOR_RESP_VIEW;
                     break;
                 case ADD_EDIT_DEL_PARM:
@@ -104,25 +97,24 @@ public class AuthorController extends HttpServlet {
                             //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
                             List<Object> ids = new ArrayList();
                             if (Boolean.valueOf(deleteType) == false) { //multi
-
                                 //ids.addAll(Arrays.asList(authorIds));
-                                for (Object id : authorIds) {
-                                    ids.add(id);
+                                for (String id : authorIds) {
+                                    as.deleteAuthorbyID(id);
                                 }
-                                as.deleteAuthorsbyIDs(ids);
-                                this.retrieveList(request, as);
+//                                as.deleteAuthorsbyIDs(ids);
+                                this.retrieveList(request);
                                 destination = AUTHOR_RESP_VIEW;
 
                             } else if (Boolean.valueOf(deleteType) == true) {//single
 
                                 as.deleteAuthorbyID(authorID);
-                                this.retrieveList(request, as);
+                                this.retrieveList(request);
                                 destination = AUTHOR_RESP_VIEW;
                             }
                             break;
                         case EDIT_ACTION:
                             String authorId = authorIds[0]; //first of checked
-                            Author author = as.getAuthorById(authorId);
+                            Author author = as.find(new Integer(authorId));
                             request.setAttribute("author", author);
                             destination = AUTHOR_EDIT_VIEW;
                             break;
@@ -134,14 +126,14 @@ public class AuthorController extends HttpServlet {
                     }
                     break;
                 case CANCEL_ACTION:
-                    this.retrieveList(request, as);
+                    this.retrieveList(request);
                     destination = AUTHOR_RESP_VIEW;
                     break;
                 case SAVE_ACTION:
                     String authorName = request.getParameter("authorName");
                     String authorId = request.getParameter("authorId");
                     as.saveAuthor(authorId, authorName);
-                    this.retrieveList(request, as);
+                    this.retrieveList(request);
                     destination = AUTHOR_RESP_VIEW;
                     break;
                 default:
@@ -160,28 +152,9 @@ public class AuthorController extends HttpServlet {
 
     //not repeating code
     //needed to set the retreieved authorlist, needed to get all of the authors
-    private void retrieveList(HttpServletRequest request, AuthorService as) throws Exception {
-        List<Author> authors = as.getAuthorList();
+    private void retrieveList(HttpServletRequest request) throws Exception {
+        List<Author> authors = as.findAll();
         request.setAttribute("authors", authors);
-    }
-
-    private void configDBConnection() throws DataAccessException, NamingException {
-        if(dbJndiName == null) {
-            as.getDao().initDAO(driverClass, url, userName, pwd);
-        } else{
-             Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
-            as.getDao().initDao(ds);
-        }
-    }
-
-    @Override
-    public void init() throws ServletException {
-//        driverClass = getServletContext().getInitParameter("db.driver.class");
-//        url = getServletContext().getInitParameter("db.url");
-//        userName = getServletContext().getInitParameter("db.username");
-//        pwd = getServletContext().getInitParameter("db.password");
-        dbJndiName = getServletContext().getInitParameter("db.jndi.name");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

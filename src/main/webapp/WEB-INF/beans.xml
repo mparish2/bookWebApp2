@@ -5,6 +5,6 @@
        bean-discovery-mode="all">
     
      <!-- alternatives>
-        <class>edu.wctc.jgl.bookwebapp.model.MockAuthorDao</class>
+        <class>edu.wctc.mgp.bookwebapp2.model.MockAuthorDao</class>
     </alternatives -->
 </beans>

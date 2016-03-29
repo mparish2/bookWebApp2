@@ -40,7 +40,7 @@
                         Delete Type
                     </label>
                     <input type="checkbox"  id="deleteToggle" name="my-checkbox" value="true" data-size="normal" data-label-width="0" data-handle-width="auto" data-on-text="Single" data-off-text="Multiple" data-off-color="warning" checked=true>
-                    <!--<label>This Switch is Set to
+                   <!-- <label>This Switch is Set to
                         <label id="CheckBoxValue2" value="None"></label>
                     </label -->
                 </div>
