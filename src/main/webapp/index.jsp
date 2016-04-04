@@ -30,7 +30,7 @@
 
                 <ul id="taskMenu" class="dropdown-menu" aria-labelledby="dLabel">
                     <li><a href="AuthorController?taskType=viewAuthors">Manage Authors <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
-                    <li class="disabled"><a href="#">Future Books... <span class="glyphicon glyphicon-book" aria-hidden="true"></span></a></li>
+                    <li><a href="BookController?taskType=viewBooks">Manage Books <span class="glyphicon glyphicon-book" aria-hidden="true"></span></a></li>
 
                 </ul>
             </div>

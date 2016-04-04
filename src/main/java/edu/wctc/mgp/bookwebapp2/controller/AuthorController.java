@@ -5,6 +5,7 @@
  */
 package edu.wctc.mgp.bookwebapp2.controller;
 
+import edu.wctc.mgp.bookwebapp2.ejb.AbstractFacade;
 import edu.wctc.mgp.bookwebapp2.ejb.AuthorFacade;
 import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class AuthorController extends HttpServlet {
                             String authorID = request.getParameter("authorId");
                             String deleteType = request.getParameter("my-checkbox");
                             //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
-                            List<Object> ids = new ArrayList();
+                          // List<Object> ids = new ArrayList();
                             if (Boolean.valueOf(deleteType) == false) { //multi
                                 //ids.addAll(Arrays.asList(authorIds));
                                 for (String id : authorIds) {
