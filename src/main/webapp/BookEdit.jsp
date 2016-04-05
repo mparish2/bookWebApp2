@@ -24,9 +24,9 @@
             <form method="POST" action="BookController">
                 <table id="bookTable" class="table table-striped table-responsive"> 
                     <tr>
-                            <td>ID</td>
-                            <td><input type="text" value="${book.bookId}" name="bookId" readonly/></td>
-                        </tr>  
+                        <td>ID</td>
+                        <td><input type="text" value="${book.bookId}" name="bookId" readonly/></td>
+                    </tr>  
                     <tr>
                         <td>Title</td>
                         <td><input type="text" value="${book.title}" name="title" /></td>
@@ -39,12 +39,21 @@
                         <td>Authors</td>
                         <td>
                             <select id="authorDropDown" name="authorId">
-                                <option value="">None</option>
-                            <c:forEach var="author" items="${authors}">                                       
-                                <option value="${author.authorId}" <c:if test="${book.authorId.authorId == author.authorId}">selected</c:if>>${author.authorName}</option>
-                            </c:forEach>
+                                <c:choose>
+                                    <c:when test="${not empty book.authorId}">
+                                        <option value="">None</option>
+                                        <c:forEach var="author" items="${authors}">                                       
+                                            <option value="${author.authorId}" <c:if test="${book.authorId.authorId == author.authorId}">selected</c:if>>${author.authorName}</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="author" items="${authors}" varStatus="rowCount">                                       
+                                            <option value="${author.authorId}" <c:if test="${rowCount.count == 1}">selected</c:if>>${author.authorName}</option>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
-                            </td>
+                        </td>
                     </tr>
 
                 </table>

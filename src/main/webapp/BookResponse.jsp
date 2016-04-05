@@ -49,6 +49,7 @@
                     </tr>
 
                     <c:forEach var="b" items="${books}">
+                        <tr>
                             <td><input type="checkbox" name="bookId" value="${b.bookId}" /></td>
                             <td>${b.title}</td>
                             <td>${b.isbn}</td>
@@ -76,10 +77,11 @@
 
             </form>
 
-               <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.jsp">Go Back</a></button>
-             <p id="errors">${errorMsg}</p>
-             
-            
+            <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.jsp">Go Back</a></button>
+
+            <p id="errors">${errorMsg}</p>
+
+
         </div>
 
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>

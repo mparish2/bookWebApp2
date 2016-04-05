@@ -38,9 +38,9 @@ public class BookFacade extends AbstractFacade<Book> {
         return q.getResultList();
     }
     
-        public void deleteBookbyID(String Id) {
-            Book book = this.find(new Integer(Id));
-            this.remove(book);
-    }
+//        public void deleteBookbyID(String Id) {
+//            Book book = this.find(new Integer(Id));
+//            this.remove(book);
+//    }
 
 }

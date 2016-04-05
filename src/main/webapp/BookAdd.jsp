@@ -33,10 +33,19 @@
                         <td>Authors</td>
                         <td>
                             <select id="authorDropDown" name="authorId">
-                                <option value="">None</option>
-                                <c:forEach var="author" items="${authors}">                                       
-                                    <option value="${author.authorId}" <c:if test="${book.authorId.authorId == author.authorId}">selected</c:if>>${author.authorName}</option>
-                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${not empty book.authorId}">
+                                        <option value="">None</option>
+                                        <c:forEach var="author" items="${authors}">                                       
+                                            <option value="${author.authorId}" <c:if test="${book.authorId.authorId == author.authorId}">selected</c:if>>${author.authorName}</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="author" items="${authors}" varStatus="rowCount">                                       
+                                            <option value="${author.authorId}" <c:if test="${rowCount.count == 1}">selected</c:if>>${author.authorName}</option>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
                         </td>
                     </tr>

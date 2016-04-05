@@ -78,7 +78,7 @@ public class BookController extends HttpServlet {
                     switch (subTaskType) {
                         // must be add or edit, go to addEdit page
 
-                        case (ADD_ACTION):
+                        case ADD_ACTION:
 
                             this.retrieveAuthorList(request, as);
                             pageDestination = BOOK_ADD_VIEW;
@@ -164,13 +164,13 @@ public class BookController extends HttpServlet {
                     break;
 
                 default:
-                    request.setAttribute("errMsg", PARAM_ERROR_MSG);
+                    request.setAttribute("errorMsg", PARAM_ERROR_MSG);
                     pageDestination = BOOK_RESP_VIEW;
                     break;
             }
 
         } catch (Exception e) {
-            request.setAttribute("errorMsg", e.getCause().getMessage());
+            request.setAttribute("errorMsg",e.getMessage());
         }
 
         // Forward to destination page
@@ -182,12 +182,12 @@ public class BookController extends HttpServlet {
 
     // Avoid D-R-Y
     private void retrieveBookList(HttpServletRequest request, AbstractFacade<Book> bookService) throws Exception {
-        List<Book> books = bs.findAll();
+        List<Book> books = bookService.findAll();
         request.setAttribute("books", books);
     }
 
     private void retrieveAuthorList(HttpServletRequest request, AbstractFacade<Author> authService) throws Exception {
-        List<Author> authors = as.findAll();
+        List<Author> authors = authService.findAll();
         request.setAttribute("authors", authors);
     }
 

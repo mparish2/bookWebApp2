@@ -87,6 +87,9 @@ public class Book implements Serializable {
     }
 
     public void setAuthorId(Author authorId) {
+//        if(authorId == null ){
+//            throw new NullPointerException();
+//        }
         this.authorId = authorId;
     }
 

@@ -1,0 +1,12 @@
+<persistence-unit name="edu.wctc.mgp_bookwebapp_war_1.0-SNAPSHOTPU2" transaction-type="JTA">
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+   <persistence-unit name="edu.wctc.mgp_bookwebapp_war_1.0-SNAPSHOTPU2" transaction-type="JTA">
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+    </properties>
+  </persistence-unit>
