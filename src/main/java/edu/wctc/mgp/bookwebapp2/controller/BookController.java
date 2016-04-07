@@ -5,19 +5,24 @@
  */
 package edu.wctc.mgp.bookwebapp2.controller;
 
-import edu.wctc.mgp.bookwebapp2.ejb.AbstractFacade;
-import edu.wctc.mgp.bookwebapp2.model.Author;
-import edu.wctc.mgp.bookwebapp2.model.Book;
+
+import edu.wctc.mgp.bookwebapp2.entity.Author;
+import edu.wctc.mgp.bookwebapp2.entity.Book;
+import edu.wctc.mgp.bookwebapp2.service.AuthorService;
+import edu.wctc.mgp.bookwebapp2.service.BookService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -40,10 +45,8 @@ public class BookController extends HttpServlet {
     //  private static final String LOGIN = "Login";
     // private static final String LOGOUT = "Logout"; */
 
-    @Inject
-    private AbstractFacade<Book> bs;
-    @Inject
-    private AbstractFacade<Author> as;
+   private BookService bs;
+   private AuthorService as;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -86,7 +89,7 @@ public class BookController extends HttpServlet {
                         case EDIT_ACTION:
 
                             String bookId = bookIds[0];
-                            book = bs.find(new Integer(bookId));
+                            book = bs.findById(bookId);
                             request.setAttribute("book", book);
                             this.retrieveAuthorList(request, as);
 
@@ -103,13 +106,13 @@ public class BookController extends HttpServlet {
                             if (Boolean.valueOf(deleteType) == false) {
 
                                 for (String id : bookIds) {
-                                    book = bs.find(new Integer(id));
+                                    book = bs.findById(id);
                                     bs.remove(book);
 
                                 }
 
                             } else if (Boolean.valueOf(deleteType) == true) {
-                                book = bs.find(new Integer(bookID));
+                                book = bs.findById(bookID);
                                 bs.remove(book);
 
                             }
@@ -135,18 +138,18 @@ public class BookController extends HttpServlet {
                         book.setIsbn(isbn);
                         Author author = null;
                         if (authorId != null) {
-                            author = as.find(new Integer(authorId));
+                            author = as.findById(authorId);
                             book.setAuthorId(author);
                         }
                         // edit 
                     } else {
 
-                        book = bs.find(new Integer(bookId));
+                        book = bs.findById(bookId);
                         book.setTitle(title);
                         book.setIsbn(isbn);
                         Author author = null;
                         if (authorId != null) {
-                            author = as.find(new Integer(authorId));
+                            author = as.findById(authorId);
                             book.setAuthorId(author);
                         }
                     }
@@ -181,12 +184,12 @@ public class BookController extends HttpServlet {
     }
 
     // Avoid D-R-Y
-    private void retrieveBookList(HttpServletRequest request, AbstractFacade<Book> bookService) throws Exception {
+    private void retrieveBookList(HttpServletRequest request, BookService bookService) throws Exception {
         List<Book> books = bookService.findAll();
         request.setAttribute("books", books);
     }
 
-    private void retrieveAuthorList(HttpServletRequest request, AbstractFacade<Author> authService) throws Exception {
+    private void retrieveAuthorList(HttpServletRequest request, AuthorService authService) throws Exception {
         List<Author> authors = authService.findAll();
         request.setAttribute("authors", authors);
     }
@@ -218,6 +221,23 @@ public class BookController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+    
+        /**
+     * Called after the constructor is called by the container. This is the
+     * correct place to do one-time initialization.
+     *
+     * @throws ServletException
+     */
+    @Override
+    public void init() throws ServletException {
+        // Ask Spring for object to inject
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils.getWebApplicationContext(sctx);
+        as = (AuthorService) ctx.getBean("authorService");
+        bs = (BookService) ctx.getBean("bookService");
+
     }
 
     /**

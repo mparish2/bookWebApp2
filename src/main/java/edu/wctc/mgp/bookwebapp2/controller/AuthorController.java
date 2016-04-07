@@ -5,8 +5,6 @@
  */
 package edu.wctc.mgp.bookwebapp2.controller;
 
-import edu.wctc.mgp.bookwebapp2.ejb.AbstractFacade;
-import edu.wctc.mgp.bookwebapp2.ejb.AuthorFacade;
 import edu.wctc.mgp.bookwebapp2.exception.DataAccessException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,17 +15,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import edu.wctc.mgp.bookwebapp2.model.Author;
+import edu.wctc.mgp.bookwebapp2.entity.Author;
+import edu.wctc.mgp.bookwebapp2.service.AuthorService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashSet;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import javax.servlet.http.HttpSession;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -51,8 +55,7 @@ public class AuthorController extends HttpServlet {
     private static final String LOGIN = "Login";
     private static final String LOGOUT = "Logout";
 
-    @Inject
-    private AuthorFacade as;
+    private AuthorService as;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -69,6 +72,7 @@ public class AuthorController extends HttpServlet {
 
         String destination = AUTHOR_RESP_VIEW;
         HttpSession session = request.getSession();
+        Author author = null;
 
         try {
             String taskType = request.getParameter("taskType");
@@ -96,11 +100,17 @@ public class AuthorController extends HttpServlet {
                             String authorID = request.getParameter("authorId");
                             String deleteType = request.getParameter("my-checkbox");
                             //or create a new multidelete method w/ a buildDeleteStatement (w/ a "in")
-                          // List<Object> ids = new ArrayList();
+                            // List<Object> ids = new ArrayList();
                             if (Boolean.valueOf(deleteType) == false) { //multi
                                 //ids.addAll(Arrays.asList(authorIds));
                                 for (String id : authorIds) {
-                                    as.deleteAuthorbyID(id);
+
+                                    //// BIG CHANGE DUE TO SPRING JPA DUE TO LAZY LOADING OF BOOKS //////
+                                    author = as.findByIdAndFetchBooksEagerly(id);
+                                    if (author == null) {
+                                        author = as.findById(id);
+                                        author.setBookSet(new LinkedHashSet<>());
+                                    }
                                 }
 //                                as.deleteAuthorsbyIDs(ids);
                                 this.retrieveList(request);
@@ -108,14 +118,20 @@ public class AuthorController extends HttpServlet {
 
                             } else if (Boolean.valueOf(deleteType) == true) {//single
 
-                                as.deleteAuthorbyID(authorID);
+                                author = as.findByIdAndFetchBooksEagerly(authorID);
+                                if (author == null) {
+                                    author = as.findById(authorID);
+                                    author.setBookSet(new LinkedHashSet<>());
+                                }
+                                as.remove(author);
                                 this.retrieveList(request);
                                 destination = AUTHOR_RESP_VIEW;
                             }
                             break;
+
                         case EDIT_ACTION:
                             String authorId = authorIds[0]; //first of checked
-                            Author author = as.find(new Integer(authorId));
+                            author = as.findByIdAndFetchBooksEagerly(authorId);
                             request.setAttribute("author", author);
                             destination = AUTHOR_EDIT_VIEW;
                             break;
@@ -133,7 +149,27 @@ public class AuthorController extends HttpServlet {
                 case SAVE_ACTION:
                     String authorName = request.getParameter("authorName");
                     String authorId = request.getParameter("authorId");
-                    as.saveAuthor(authorId, authorName);
+                    
+  
+                    if(authorId == null) {
+                        // it must be new
+                        author = new Author(0);
+                        author.setAuthorName(authorName);
+                        author.setDateAdded(new Date());
+                    } else {
+                        // it must be an update
+                            
+                       
+                        author = as.findByIdAndFetchBooksEagerly(authorId);
+                        if(author == null) {
+                            author = as.findById(authorId);
+                            author.setBookSet(new LinkedHashSet<>());
+                        }
+  
+                            
+                        author.setAuthorName(authorName);
+                    }
+                    
                     this.retrieveList(request);
                     destination = AUTHOR_RESP_VIEW;
                     break;
@@ -150,9 +186,9 @@ public class AuthorController extends HttpServlet {
         RequestDispatcher view = request.getServletContext().getRequestDispatcher(destination);
         view.forward(request, response);
     }
-
     //not repeating code
     //needed to set the retreieved authorlist, needed to get all of the authors
+
     private void retrieveList(HttpServletRequest request) throws Exception {
         List<Author> authors = as.findAll();
         request.setAttribute("authors", authors);
@@ -187,6 +223,22 @@ public class AuthorController extends HttpServlet {
         processRequest(request, response);
     }
 
+        /**
+     * Called after the constructor is called by the container. This is the
+     * correct place to do one-time initialization.
+     *
+     * @throws ServletException
+     */
+    @Override
+    public void init() throws ServletException {
+        // Ask Spring for object to inject
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils.getWebApplicationContext(sctx);
+        as = (AuthorService) ctx.getBean("authorService");
+
+    }
+    
     /**
      * Returns a short description of the servlet.
      *
