@@ -82,7 +82,6 @@ public class BookController extends HttpServlet {
                         // must be add or edit, go to addEdit page
 
                         case ADD_ACTION:
-
                             this.retrieveAuthorList(request, as);
                             pageDestination = BOOK_ADD_VIEW;
                             break;
