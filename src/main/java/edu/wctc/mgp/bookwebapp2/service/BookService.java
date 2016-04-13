@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * solely to tell Spring to translate any exception messages into more
  * user friendly text. Any class annotated that way will do that.
  * 
- * @author jlombardo
+ * @author mparish2
  */
 @Repository
 @Transactional(readOnly = true)

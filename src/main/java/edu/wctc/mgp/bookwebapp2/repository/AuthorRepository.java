@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 /**
  *
- * @author jlombardo
+ * @author mparish2
  */
 public interface AuthorRepository extends JpaRepository<Author, Integer>, Serializable {
     
