@@ -111,7 +111,9 @@ public class AuthorController extends HttpServlet {
                                         author = as.findById(id);
                                         author.setBookSet(new LinkedHashSet<>());
                                     }
+                                       as.remove(author);
                                 }
+                             
 //                                as.deleteAuthorsbyIDs(ids);
                                 this.retrieveList(request);
                                 destination = AUTHOR_RESP_VIEW;
@@ -156,20 +158,17 @@ public class AuthorController extends HttpServlet {
                         author = new Author(0);
                         author.setAuthorName(authorName);
                         author.setDateAdded(new Date());
+                        
                     } else {
                         // it must be an update
-                            
-                       
                         author = as.findByIdAndFetchBooksEagerly(authorId);
                         if(author == null) {
                             author = as.findById(authorId);
                             author.setBookSet(new LinkedHashSet<>());
-                        }
-  
-                            
+                        }                  
                         author.setAuthorName(authorName);
                     }
-                    
+                    as.edit(author);
                     this.retrieveList(request);
                     destination = AUTHOR_RESP_VIEW;
                     break;
