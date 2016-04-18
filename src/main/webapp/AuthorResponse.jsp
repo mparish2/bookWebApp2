@@ -8,6 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,6 +22,7 @@
         
         <div class="logoutArea container">
              <form method="POST" action="AuthorController?taskType=Logout">
+                      
                 <p id="welcomeMessAuth">Welcome  ${message}</p>
                 <input type="submit" class="btn btn-primary" value="Logout" id="logout" name="taskType" />
              </form>
@@ -35,6 +37,9 @@
             <br>
 
             <form method="POST" action="AuthorController?taskType=AEDAuthor">
+                       <sec:csrfInput />
+                   
+                       <sec:authorize access="hasAnyRole('ROLE_MGR')">
                   <div id="deleteToggleContent" class="bootstrap-switch-container">
                     <label id="deleteLabel" for="deleteToggle">
                         Delete Type
@@ -50,7 +55,7 @@
                     <input type="submit"  class="btn btn-danger" value="Delete" name="submit" />
                     
                 </div>
-                  
+                             </sec:authorize>
                 <table id="authorTable" class="table table-striped table-responsive">
                     <tr>
                         <th>Author ID</th>
@@ -68,25 +73,26 @@
                             </tr>
                     </c:forEach>
                 </table>
+            <sec:authorize access="hasAnyRole('ROLE_MGR')">
                 <div class="input-group">
                     <input type="submit" class="btn btn-success" value="Add" name="submit" />
                     <input type="submit" class="btn btn-warning" value="Edit" name="submit" />&nbsp;&nbsp;
                     <input type="submit"  class="btn btn-danger" value="Delete" name="submit" /> 
                     
                 </div>
-
+                 </sec:authorize>
                 <br>
                 <br>
                
             </form>
-             <button type="button" id="goBack" class="btn btn-primary"><a href="http://localhost:8080/bookWebApp2/index.jsp">Go Back</a></button>
+                       <a href="https://localhost:8181/bookwebapp/index.jsp"> <button type="button" id="goBack" class="btn btn-primary">Go Back</button></a>
              <p id="errors">${errorMsg}</p>
              
               
         </div>
        
 
-        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="Content/bootstrap-switch.min.js"></script>
         <script>

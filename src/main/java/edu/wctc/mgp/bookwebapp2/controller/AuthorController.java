@@ -132,7 +132,7 @@ public class AuthorController extends HttpServlet {
 
                         case EDIT_ACTION:
                             String authorId = authorIds[0]; //first of checked
-                            author = as.findById(authorId);
+                            author = as.findByIdAndFetchBooksEagerly(authorId);
                             request.setAttribute("author", author);
                             destination = AUTHOR_EDIT_VIEW;
                             break;
@@ -160,7 +160,7 @@ public class AuthorController extends HttpServlet {
                         
                     } else {
                         // it must be an update
-                        author = as.findById(authorId);
+                        author = as.findByIdAndFetchBooksEagerly(authorId);
                         if(author == null) {
                             author = as.findById(authorId);
                             author.setBookSet(new LinkedHashSet<>());

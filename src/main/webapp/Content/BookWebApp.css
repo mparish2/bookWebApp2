@@ -96,6 +96,11 @@ tr:nth-child(even)>td {
     font-weight: bold;
     color: #081472;
 }
+ #logout a{
+    color: #fff;
+    padding: 10px;
+
+}
 #goBack{
     margin-bottom: 20px;
 }
