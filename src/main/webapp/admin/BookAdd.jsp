@@ -1,6 +1,6 @@
 <%-- 
-    Document   : BookEdit
-    Created on : Apr 2, 2016, 3:24:32 PM
+    Document   : BookAdd
+    Created on : Apr 2, 2016, 3:24:18 PM
     Author     : Matthew_2
 --%>
 
@@ -8,25 +8,19 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>EDIT BOOKS</title>
-        <link rel="stylesheet" href="Content/BookWebApp.css">
+        <title>ADD BOOKS</title>
+        <link rel="stylesheet" href='<%= this.getServletContext().getContextPath() + "/Content/BookWebApp.css"%>'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     </head>
-    <body>
-        <h2>Edit a Book</h2>
-
-        <div class="container">
+    <body id="addBody">
+        <div class="container" id="addContent">
+            <h2>Add a Book</h2>
             <form method="POST" action="BookController">
                 <table id="bookTable" class="table table-striped table-responsive"> 
-                    <tr>
-                        <td>ID</td>
-                        <td><input type="text" value="${book.bookId}" name="bookId" readonly/></td>
-                    </tr>  
                     <tr>
                         <td>Title</td>
                         <td><input type="text" value="${book.title}" name="title" /></td>
@@ -62,6 +56,11 @@
             </form>
             <p id="errors">${errorMsg}</p>
         </div>
+
+
+
+
+
 
 
         <script src="https://code.jquery.com/jquery-latest.min.js"></script>

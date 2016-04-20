@@ -52,30 +52,38 @@
         <sec:access-denied-handler error-page="/loginerror.jsp" />
 
         <!-- isAnonymous is pages that don't have security and can be visited by public -->
-        <sec:intercept-url pattern="/login.jsp" 
+        <sec:intercept-url pattern="/UserHomePage.jsp" 
+                           access="hasAnyRole('ROLE_USER', 'ROLE_MGR')" requires-channel="https"/>
+        
+         <sec:intercept-url pattern="/LoginPage.jsp" 
                            access="isAnonymous()" requires-channel="https"/>
         
         <sec:intercept-url pattern="/loginerror.jsp" 
                            access="isAnonymous()" requires-channel="https"/>
 
         <sec:intercept-url 
+            pattern="/admin/**" 
+            access="hasAnyRole( 'ROLE_MGR')" requires-channel="https" />
+    
+        <sec:intercept-url 
             pattern="/**" 
             access="hasAnyRole('ROLE_USER', 'ROLE_MGR')" requires-channel="https" />
-    
+        
         <!-- Use custom form for login -->
         <sec:form-login 
             username-parameter="j_username" 
 	    password-parameter="j_password"
             login-processing-url="/j_spring_security_check"
-            login-page="/login.jsp" 
-            default-target-url="/index.jsp"
+            login-page="/LoginPage.jsp" 
+            default-target-url="/UserHomePage.jsp"
             always-use-default-target="true"
-            authentication-failure-url="/loginerror.jsp"/>
+            authentication-success-handler-ref="myAuthenticationHandler"
+            authentication-failure-url= "/loginerror.jsp"/>
             
         <sec:logout logout-url="/j_spring_security_logout" 
                     invalidate-session="true" 
                     delete-cookies="JSESSIONID"
-                    logout-success-url="/login.jsp" />
+                    logout-success-url="/LoginPage.jsp" />
         
         <sec:csrf disabled="true"/>
         <!-- end Spring Security Config -->
@@ -127,7 +135,10 @@
     <!-- Spring managed transactions -->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
+       
     </bean>
 
-    <tx:annotation-driven />   
+    <bean id="myAuthenticationHandler" class="edu.wctc.mgp.bookwebapp2.service.MyAuthenticationHandler" />
+    
+ <tx:annotation-driven />   
 </beans>

@@ -184,6 +184,7 @@ public class AuthorController extends HttpServlet {
         RequestDispatcher view = request.getServletContext().getRequestDispatcher(destination);
         view.forward(request, response);
     }
+  
     //not repeating code
     //needed to set the retreieved authorlist, needed to get all of the authors
 

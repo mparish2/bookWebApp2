@@ -8,11 +8,10 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="Jim Lombardo">
+        <link rel="stylesheet" href='<%= this.getServletContext().getContextPath() + "/Content/BookWebApp.css"%>'>
 
         <title>Spring Security Demo :: Error Page</title>
-        <link rel="stylesheet" href="css/styles.css" /> 
+ 
 
     </head>
 
@@ -32,7 +31,7 @@
             to view the content your desire.
         </p>
         <p class='helpText'>
-            <a style="color: #ffc400;" href='<%= this.getServletContext().getContextPath() + "/login.jsp"%>'>Back to Login Page</a>
+            <a style="color: #ffc400;" href='<%= this.getServletContext().getContextPath() + "/LoginPage.jsp"%>'>Back to Login Page</a>
         </p>
 
 
